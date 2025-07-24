@@ -6,7 +6,13 @@
       "Bash(robocopy:*)",
       "Bash(powershell:*)",
       "Bash(cp:*)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "WebFetch(domain:demos.themeselection.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl:*)",
+      "Bash(unzip:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   }
