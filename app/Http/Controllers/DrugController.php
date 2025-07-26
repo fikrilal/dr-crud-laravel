@@ -169,7 +169,7 @@ class DrugController extends Controller
         $drugs = Drug::where('nm_obat', 'LIKE', "%{$query}%")
             ->where('stok', '>', 0)
             ->where('status', 'active')
-            ->select('kd_obat as id', 'nm_obat', 'harga_jual', 'stok', 'satuan')
+            ->select('kd_obat', 'nm_obat', 'harga_jual', 'stok', 'satuan')
             ->limit(10)
             ->get()
             ->map(function($drug) {
