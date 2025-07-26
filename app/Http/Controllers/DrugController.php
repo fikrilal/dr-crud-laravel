@@ -65,10 +65,34 @@ class DrugController extends Controller
      */
     public function store(StoreDrugRequest $request)
     {
-        $drug = Drug::create($request->validated());
+        try {
+            // Generate drug code
+            $lastDrug = Drug::orderBy('kd_obat', 'desc')->first();
+            $nextNumber = $lastDrug 
+                ? (int)substr($lastDrug->kd_obat, 2) + 1 
+                : 1;
+            $drugCode = 'DR' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
-        return redirect()->route('drugs.index')
-            ->with('success', 'Drug added successfully!');
+            $drug = Drug::create([
+                'kd_obat' => $drugCode,
+                'nm_obat' => $request->nama_obat,
+                'jenis' => $request->kategori,
+                'satuan' => $request->bentuk_obat,
+                'harga_beli' => $request->harga_beli,
+                'harga_jual' => $request->harga_jual,
+                'stok' => $request->stok,
+                'min_stock_level' => $request->stok_minimum,
+                'kd_supplier' => $request->supplier_id,
+                'status' => $request->status,
+                'description' => $request->deskripsi,
+            ]);
+
+            return redirect()->route('drugs.index')
+                ->with('success', 'Drug added successfully!');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Failed to add drug: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -94,10 +118,26 @@ class DrugController extends Controller
      */
     public function update(UpdateDrugRequest $request, Drug $drug)
     {
-        $drug->update($request->validated());
+        try {
+            $drug->update([
+                'nm_obat' => $request->nama_obat,
+                'jenis' => $request->kategori,
+                'satuan' => $request->bentuk_obat,
+                'harga_beli' => $request->harga_beli,
+                'harga_jual' => $request->harga_jual,
+                'stok' => $request->stok,
+                'min_stock_level' => $request->stok_minimum,
+                'kd_supplier' => $request->supplier_id,
+                'status' => $request->status,
+                'description' => $request->deskripsi,
+            ]);
 
-        return redirect()->route('drugs.index')
-            ->with('success', 'Drug updated successfully!');
+            return redirect()->route('drugs.index')
+                ->with('success', 'Drug updated successfully!');
+        } catch (\Exception $e) {
+            return back()->withInput()
+                ->with('error', 'Failed to update drug: ' . $e->getMessage());
+        }
     }
 
     /**
