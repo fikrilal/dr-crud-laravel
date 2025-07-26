@@ -12,7 +12,8 @@
       "Bash(curl:*)",
       "Bash(unzip:*)",
       "Bash(ls:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

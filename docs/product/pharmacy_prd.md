@@ -118,21 +118,47 @@ This document outlines the requirements for **Dr. CRUD**, a comprehensive pharma
 - Jumlah - Quantity Purchased
 ```
 
-#### 3.2 **[ENHANCEMENT]** Additional Required Tables
+#### 3.2 **[MVP REQUIRED]** Additional Required Tables
 
-**Users (System Users)**
+**Users (System Users) - REQUIRED FOR MVP**
 ```sql
 - user_id (Primary Key, Auto Increment)
-- username (Unique)
-- password (Hashed)
+- username (Unique, VARCHAR(50))
+- password (Hashed, VARCHAR(255))
 - user_type (ENUM: 'admin', 'apoteker', 'pelanggan')
 - KdPelanggan (Foreign Key, Nullable) - Links to customer if user_type = 'pelanggan'
-- created_at
-- updated_at
-- is_active (Boolean)
+- is_active (Boolean, Default: 1)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
 ```
 
-**[ENHANCEMENT] Drug_Expiry (Drug Expiration Tracking)**
+**Sessions (Security Sessions) - REQUIRED FOR MVP**
+```sql
+- session_id (Primary Key, VARCHAR(128))
+- user_id (Foreign Key to Users)
+- token (VARCHAR(255), Unique)
+- expires_at (TIMESTAMP)
+- created_at (TIMESTAMP)
+```
+
+#### 3.3 **[MVP REQUIRED]** Existing Table Modifications
+
+**Tabel_Obat Additional Fields - REQUIRED FOR MVP**
+```sql
+- status (ENUM: 'active', 'inactive', Default: 'active') - Drug status
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+```
+
+**All Existing Tables - Add Timestamps**
+```sql
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+```
+
+#### 3.4 **[FUTURE ENHANCEMENT]** Optional Tables for Later Phases
+
+**Drug_Expiry (Drug Expiration Tracking)**
 ```sql
 - expiry_id (Primary Key, Auto Increment)
 - KdObat (Foreign Key)
@@ -140,14 +166,6 @@ This document outlines the requirements for **Dr. CRUD**, a comprehensive pharma
 - expiry_date
 - quantity
 - created_at
-```
-
-**[ENHANCEMENT] Tabel_Obat Additional Fields**
-```sql
-- status (ENUM: 'active', 'inactive', 'discontinued') - Drug status
-- min_stock_level - Minimum stock alert level
-- created_at
-- updated_at
 ```
 
 ### 4. Functional Requirements
