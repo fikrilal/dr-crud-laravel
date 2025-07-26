@@ -49,6 +49,16 @@ class Supplier extends Model
         $this->attributes['telpon'] = $value;
     }
 
+    public function getAlamatSupplierAttribute()
+    {
+        return $this->alamat;
+    }
+
+    public function setAlamatSupplierAttribute($value)
+    {
+        $this->attributes['alamat'] = $value;
+    }
+
     public function drugs()
     {
         return $this->hasMany(Drug::class, 'kd_supplier', 'kd_supplier');

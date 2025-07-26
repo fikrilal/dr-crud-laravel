@@ -66,7 +66,7 @@
                     Sales Processing
                 </a>
                 
-                <a class="nav-link {{ request()->routeIs('pharmacist.purchases.*') ? 'active' : '' }}" href="{{ route('pharmacist.purchases.index') }}">
+                <a class="nav-link {{ request()->routeIs('purchases.*') ? 'active' : '' }}" href="{{ route('purchases.index') }}">
                     <i class="bi bi-bag me-2"></i>
                     Purchase Orders
                 </a>

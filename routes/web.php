@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrugController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/sales/customer', [SaleController::class, 'createQuickCustomer'])->name('sales.createCustomer');
     Route::get('/api/sales/stats', [SaleController::class, 'getStats'])->name('sales.stats');
     Route::get('/sales/{sale}/receipt', [SaleController::class, 'receipt'])->name('sales.receipt');
+});
+
+// Purchase Management Routes (Admin & Pharmacist)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('purchases', PurchaseController::class);
+    Route::post('/purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
+    Route::post('/purchases/{purchase}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
 });
 
 // Pharmacist Routes
