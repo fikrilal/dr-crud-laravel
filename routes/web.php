@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrugController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('drugs', DrugController::class);
     Route::get('/api/drugs/search', [DrugController::class, 'search'])->name('drugs.search');
     Route::patch('/drugs/{drug}/stock', [DrugController::class, 'updateStock'])->name('drugs.updateStock');
+});
+
+// Sales Management Routes (Admin & Pharmacist)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('sales', SaleController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('/api/sales/drug/{drug}', [SaleController::class, 'getDrug'])->name('sales.getDrug');
+    Route::post('/api/sales/customer', [SaleController::class, 'createQuickCustomer'])->name('sales.createCustomer');
+    Route::get('/api/sales/stats', [SaleController::class, 'getStats'])->name('sales.stats');
+    Route::get('/sales/{sale}/receipt', [SaleController::class, 'receipt'])->name('sales.receipt');
 });
 
 // Pharmacist Routes
