@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Role-based Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])

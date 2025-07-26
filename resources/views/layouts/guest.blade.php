@@ -21,7 +21,7 @@
                 <div class="col-md-6 col-lg-5 col-xl-4">
                     <!-- Logo -->
                     <div class="text-center mb-4">
-                        <a href="{{ route('welcome') ?? '/' }}" class="text-decoration-none">
+                        <a href="{{ route('welcome') }}" class="text-decoration-none">
                             <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                                 <i class="bi bi-heart-pulse text-primary fs-1"></i>
                             </div>
@@ -41,7 +41,7 @@
                     <div class="text-center mt-4">
                         <div class="row">
                             <div class="col-6">
-                                <a href="{{ route('welcome') ?? '/' }}" class="text-white-50 text-decoration-none small">
+                                <a href="{{ route('welcome') }}" class="text-white-50 text-decoration-none small">
                                     <i class="bi bi-arrow-left me-1"></i>Back to Home
                                 </a>
                             </div>
