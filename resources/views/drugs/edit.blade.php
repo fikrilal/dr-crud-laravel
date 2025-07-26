@@ -81,8 +81,8 @@
                                         id="supplier_id" name="supplier_id" required>
                                     <option value="">Select Supplier</option>
                                     @foreach($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}" {{ old('supplier_id', $drug->supplier_id) == $supplier->id ? 'selected' : '' }}>
-                                            {{ $supplier->nama_supplier }}
+                                        <option value="{{ $supplier->kd_supplier }}" {{ old('supplier_id', $drug->supplier_id) == $supplier->kd_supplier ? 'selected' : '' }}>
+                                            {{ $supplier->nama_supplier }} ({{ $supplier->kd_supplier }})
                                         </option>
                                     @endforeach
                                 </select>
