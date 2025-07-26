@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DrugController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('drugs', DrugController::class);
     Route::get('/api/drugs/search', [DrugController::class, 'search'])->name('drugs.search');
     Route::patch('/drugs/{drug}/stock', [DrugController::class, 'updateStock'])->name('drugs.updateStock');
+});
+
+// Supplier Management Routes (Admin & Pharmacist)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('suppliers', SupplierController::class);
+    Route::get('/api/suppliers/search', [SupplierController::class, 'search'])->name('suppliers.search');
 });
 
 // Sales Management Routes (Admin & Pharmacist)

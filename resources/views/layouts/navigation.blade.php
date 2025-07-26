@@ -51,20 +51,25 @@
         <div class="nav-section mt-3">
             <h6 class="text-white-50 text-uppercase small fw-bold">Operations</h6>
             
-            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
-                <i class="bi bi-capsule me-2"></i>
-                Drug Inventory
-            </a>
-            
-            <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
-                <i class="bi bi-cart-check me-2"></i>
-                Sales Processing
-            </a>
-            
-            <a class="nav-link {{ request()->routeIs('pharmacist.purchases.*') ? 'active' : '' }}" href="{{ route('pharmacist.purchases.index') }}">
-                <i class="bi bi-bag me-2"></i>
-                Purchase Orders
-            </a>
+                            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
+                    <i class="bi bi-capsule me-2"></i>
+                    Drug Inventory
+                </a>
+                
+                <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
+                    <i class="bi bi-truck me-2"></i>
+                    Supplier Management
+                </a>
+                
+                <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
+                    <i class="bi bi-cart-check me-2"></i>
+                    Sales Processing
+                </a>
+                
+                <a class="nav-link {{ request()->routeIs('pharmacist.purchases.*') ? 'active' : '' }}" href="{{ route('pharmacist.purchases.index') }}">
+                    <i class="bi bi-bag me-2"></i>
+                    Purchase Orders
+                </a>
         </div>
     @endif
 
