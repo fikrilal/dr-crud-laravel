@@ -29,7 +29,7 @@
         <div class="nav-section mt-3">
             <h6 class="text-white-50 text-uppercase small fw-bold">Inventory</h6>
             
-            <a class="nav-link" href="#">
+            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
                 <i class="bi bi-capsule me-2"></i>
                 Drug Management
             </a>
@@ -51,7 +51,7 @@
         <div class="nav-section mt-3">
             <h6 class="text-white-50 text-uppercase small fw-bold">Operations</h6>
             
-            <a class="nav-link {{ request()->routeIs('pharmacist.drugs.*') ? 'active' : '' }}" href="{{ route('pharmacist.drugs.index') }}">
+            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
                 <i class="bi bi-capsule me-2"></i>
                 Drug Inventory
             </a>
