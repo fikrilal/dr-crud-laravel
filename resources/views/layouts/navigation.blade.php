@@ -83,14 +83,18 @@
                 Drug Catalog
             </a>
             
+            <a class="nav-link {{ request()->routeIs('customer.cart.*') ? 'active' : '' }}" href="{{ route('customer.cart.index') }}">
+                <i class="bi bi-cart me-2"></i>
+                Shopping Cart
+                @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
+                @if($cartCount > 0)
+                    <span class="badge bg-danger ms-2">{{ $cartCount }}</span>
+                @endif
+            </a>
+            
             <a class="nav-link {{ request()->routeIs('customer.orders.*') ? 'active' : '' }}" href="{{ route('customer.orders.index') }}">
                 <i class="bi bi-bag-check me-2"></i>
                 My Orders
-            </a>
-            
-            <a class="nav-link" href="#">
-                <i class="bi bi-heart me-2"></i>
-                Favorites
             </a>
         </div>
     @endif
@@ -122,12 +126,16 @@
         @endif
         
         @if(auth()->user()->user_type === 'customer')
-            <button class="btn btn-outline-light btn-sm w-100 mb-2">
-                <i class="bi bi-search me-2"></i>Search Drugs
-            </button>
-            <button class="btn btn-outline-light btn-sm w-100">
-                <i class="bi bi-telephone me-2"></i>Contact Pharmacy
-            </button>
+            <a href="{{ route('customer.cart.index') }}" class="btn btn-outline-light btn-sm w-100 mb-2">
+                <i class="bi bi-cart me-2"></i>View Cart
+                @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
+                @if($cartCount > 0)
+                    <span class="badge bg-danger ms-2">{{ $cartCount }}</span>
+                @endif
+            </a>
+            <a href="{{ route('customer.catalog.index') }}" class="btn btn-outline-light btn-sm w-100">
+                <i class="bi bi-search me-2"></i>Browse Catalog
+            </a>
         @endif
     </div>
 

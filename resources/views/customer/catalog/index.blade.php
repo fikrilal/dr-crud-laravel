@@ -144,14 +144,22 @@
                                 </small>
                             </div>
 
-                            <!-- Price -->
-                            <div class="d-flex justify-content-between align-items-center">
+                            <!-- Price and Actions -->
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h5 class="mb-0 text-primary">
                                     Rp {{ number_format($drug->harga_jual, 0, ',', '.') }}
                                 </h5>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-sm btn-primary add-to-cart-btn" 
+                                        data-drug-id="{{ $drug->kd_obat }}"
+                                        data-drug-name="{{ $drug->nm_obat }}"
+                                        data-max-stock="{{ $drug->stok }}">
+                                    <i class="bx bx-cart-add me-1"></i>Add to Cart
+                                </button>
                                 <a href="{{ route('customer.catalog.show', $drug->kd_obat) }}" 
-                                   class="btn btn-sm btn-outline-primary">
-                                    View Details
+                                   class="btn btn-sm btn-outline-secondary">
+                                    <i class="bx bx-detail me-1"></i>View Details
                                 </a>
                             </div>
                         </div>
@@ -208,4 +216,83 @@
     color: #696cff !important;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to cart functionality for catalog items
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const drugId = this.dataset.drugId;
+            const drugName = this.dataset.drugName;
+            const maxStock = parseInt(this.dataset.maxStock);
+            
+            if (maxStock <= 0) {
+                showAlert('error', 'This item is out of stock');
+                return;
+            }
+            
+            // Disable button and show loading
+            this.disabled = true;
+            const originalContent = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Adding...';
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('drug_id', drugId);
+            formData.append('quantity', 1);
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            
+            fetch('{{ route("customer.cart.add") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('success', `${drugName} added to cart successfully!`);
+                } else {
+                    showAlert('error', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('error', 'An error occurred. Please try again.');
+            })
+            .finally(() => {
+                this.disabled = false;
+                this.innerHTML = originalContent;
+            });
+        });
+    });
+});
+
+function showAlert(type, message) {
+    // Remove any existing alerts
+    const existingAlert = document.querySelector('.catalog-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+    
+    const alertType = type === 'success' ? 'alert-success' : 'alert-danger';
+    const icon = type === 'success' ? 'bx-check-circle' : 'bx-error';
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert ${alertType} alert-dismissible fade show catalog-alert`;
+    alertDiv.innerHTML = `
+        <i class="bx ${icon} me-2"></i>${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.querySelector('.container-xxl').prepend(alertDiv);
+    
+    // Auto dismiss after 3 seconds
+    setTimeout(() => {
+        if (alertDiv) alertDiv.remove();
+    }, 3000);
+}
+</script>
 @endsection

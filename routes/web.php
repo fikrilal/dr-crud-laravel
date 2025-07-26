@@ -7,6 +7,7 @@ use App\Http\Controllers\SaleController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Customer\CatalogController;
+use App\Http\Controllers\Customer\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -86,12 +87,21 @@ Route::middleware(['auth', 'pharmacist'])->prefix('pharmacist')->name('pharmacis
 
 // Customer Routes
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
+    // Catalog
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
     Route::get('/catalog/{drug}', [CatalogController::class, 'show'])->name('catalog.show');
     
-    Route::get('/orders', function () {
-        return view('customer.orders.index');
-    })->name('orders.index');
+    // Cart & Orders
+    Route::post('/cart/add', [OrderController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.index');
+    Route::post('/cart/update', [OrderController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/remove', [OrderController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::post('/order', [OrderController::class, 'placeOrder'])->name('order.place');
+    
+    // Order History
+    Route::get('/orders', [OrderController::class, 'orders'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'showOrder'])->name('orders.show');
 });
 
 // Shared authenticated routes

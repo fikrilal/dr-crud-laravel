@@ -108,23 +108,43 @@
 
         <!-- Sidebar -->
         <div class="col-lg-4">
-            <!-- Quick Actions -->
+            <!-- Add to Cart -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">Quick Actions</h5>
+                    <h5 class="card-title mb-0">Add to Cart</h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" onclick="contactPharmacy()">
-                            <i class="bx bx-phone me-2"></i>Contact Pharmacy
-                        </button>
-                        <button class="btn btn-outline-primary" onclick="checkAvailability()">
-                            <i class="bx bx-check-circle me-2"></i>Check Availability
-                        </button>
-                        <a href="{{ route('customer.catalog.index') }}" class="btn btn-outline-secondary">
-                            <i class="bx bx-arrow-back me-2"></i>Back to Catalog
-                        </a>
-                    </div>
+                    <form id="addToCartForm">
+                        @csrf
+                        <input type="hidden" name="drug_id" value="{{ $drug->kd_obat }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Quantity</label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQuantity()">
+                                    <i class="bx bx-minus"></i>
+                                </button>
+                                <input type="number" class="form-control text-center" name="quantity" 
+                                       id="quantity" value="1" min="1" max="{{ min(10, $drug->stok) }}">
+                                <button type="button" class="btn btn-outline-secondary" onclick="increaseQuantity()">
+                                    <i class="bx bx-plus"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Max: {{ min(10, $drug->stok) }} units</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="addToCartBtn">
+                                <i class="bx bx-cart-add me-2"></i>Add to Cart
+                            </button>
+                            <a href="{{ route('customer.cart.index') }}" class="btn btn-outline-primary">
+                                <i class="bx bx-cart me-2"></i>View Cart
+                            </a>
+                            <a href="{{ route('customer.catalog.index') }}" class="btn btn-outline-secondary">
+                                <i class="bx bx-arrow-back me-2"></i>Back to Catalog
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -238,12 +258,84 @@
 </div>
 
 <script>
-function contactPharmacy() {
-    alert('Please call us at (555) 123-4567 or visit our pharmacy for assistance with medication orders.');
+function decreaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+    }
 }
 
-function checkAvailability() {
-    alert('This medication is currently in stock with {{ $drug->stok }} units available. Visit our pharmacy for purchase.');
+function increaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    const maxValue = parseInt(quantityInput.max);
+    if (currentValue < maxValue) {
+        quantityInput.value = currentValue + 1;
+    }
 }
+
+document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    
+    addToCartBtn.disabled = true;
+    addToCartBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+    
+    fetch('{{ route("customer.cart.add") }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="bx bx-check-circle me-2"></i>${data.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container-xxl').prepend(alertDiv);
+            
+            // Reset form
+            document.getElementById('quantity').value = 1;
+            
+            // Auto dismiss after 3 seconds
+            setTimeout(() => {
+                if (alertDiv) alertDiv.remove();
+            }, 3000);
+        } else {
+            // Show error message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+            alertDiv.innerHTML = `
+                <i class="bx bx-error me-2"></i>${data.message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container-xxl').prepend(alertDiv);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+        alertDiv.innerHTML = `
+            <i class="bx bx-error me-2"></i>An error occurred. Please try again.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.querySelector('.container-xxl').prepend(alertDiv);
+    })
+    .finally(() => {
+        addToCartBtn.disabled = false;
+        addToCartBtn.innerHTML = '<i class="bx bx-cart-add me-2"></i>Add to Cart';
+    });
+});
 </script>
 @endsection

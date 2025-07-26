@@ -13,6 +13,7 @@ class SaleDetail extends Model
 
     protected $fillable = [
         'nota',
+        'no_faktur',
         'kd_obat',
         'jumlah',
         'harga_satuan',

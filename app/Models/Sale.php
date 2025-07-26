@@ -15,14 +15,23 @@ class Sale extends Model
 
     protected $fillable = [
         'nota',
+        'no_faktur',
         'tgl_nota',
+        'tanggal',
         'kd_pelanggan',
         'user_id',
         'diskon',
         'total_before_discount',
         'total_after_discount',
+        'total_harga',
         'payment_method',
+        'metode_pembayaran',
+        'status_pembayaran',
         'notes',
+        'catatan',
+        'alamat_kirim',
+        'status_pesanan',
+        'tipe_transaksi',
     ];
 
     protected $casts = [
@@ -102,5 +111,10 @@ class Sale extends Model
     public function saleDetails()
     {
         return $this->hasMany(SaleDetail::class, 'nota', 'nota');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(SaleDetail::class, 'no_faktur', 'no_faktur');
     }
 }
