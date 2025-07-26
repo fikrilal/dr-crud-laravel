@@ -6,6 +6,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Customer\CatalogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,9 +86,8 @@ Route::middleware(['auth', 'pharmacist'])->prefix('pharmacist')->name('pharmacis
 
 // Customer Routes
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
-    Route::get('/catalog', function () {
-        return view('customer.catalog.index');
-    })->name('catalog.index');
+    Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+    Route::get('/catalog/{drug}', [CatalogController::class, 'show'])->name('catalog.show');
     
     Route::get('/orders', function () {
         return view('customer.orders.index');
