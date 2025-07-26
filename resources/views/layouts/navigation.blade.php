@@ -56,7 +56,7 @@
                 Drug Inventory
             </a>
             
-            <a class="nav-link {{ request()->routeIs('pharmacist.sales.*') ? 'active' : '' }}" href="{{ route('pharmacist.sales.index') }}">
+            <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
                 <i class="bi bi-cart-check me-2"></i>
                 Sales Processing
             </a>
