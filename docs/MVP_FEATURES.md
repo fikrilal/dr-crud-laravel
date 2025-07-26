@@ -3,300 +3,310 @@
 
 ### **MVP Scope: 1-Week Development Timeline**
 
-**Development Priority:** Core CRUD operations with essential business logic
-**Target:** Functional pharmacy system with role-based access control
+**Development Priority:** Core CRUD operations with Laravel framework
+**Target:** Functional pharmacy system with Laravel role-based access control
 
 ---
 
-## **🔐 Authentication System (Universal)**
+## **🔐 Laravel Authentication System (Universal)**
 
 ### **Login & Session Management**
-- ✅ **Login Form** - Universal login for all user types
-- ✅ **Session Management** - Secure session handling with timeout
-- ✅ **Role Detection** - Automatic redirect based on user_type  
-- ✅ **Logout** - Secure session termination
-- ✅ **Password Security** - Hashed password storage
+- ✅ **Laravel Authentication** - Built-in Laravel auth for all user types
+- ✅ **Laravel Sessions** - Secure session handling with Laravel session management
+- ✅ **Role Detection** - Automatic redirect based on user_type using Laravel middleware
+- ✅ **Laravel Logout** - Secure session termination with Laravel auth
+- ✅ **Password Security** - Laravel hashed password storage with bcrypt
 
-**Pages:** `login.php`, `logout.php`
-**Controllers:** `AuthController.php`
-**Models:** `User.php`
+**Controllers:** `AuthController`, `LoginController`, `RegisterController`
+**Models:** `User` (Eloquent model)
+**Views:** `auth/login.blade.php`, `auth/register.blade.php`
+**Routes:** Laravel authentication routes with middleware
 
 ---
 
 ## **👤 Admin Role Features**
 
 ### **🏠 Admin Dashboard**
-- ✅ **System Overview** - Key metrics and statistics
-- ✅ **Quick Actions** - Fast access to common tasks
-- ✅ **Recent Activity** - Latest system activities
-- ✅ **Alerts** - Low stock, expiring drugs, system notifications
+- ✅ **System Overview** - Key metrics using Laravel Eloquent queries
+- ✅ **Quick Actions** - Fast access using Laravel resource routes
+- ✅ **Recent Activity** - Latest activities using Laravel relationships
+- ✅ **Alerts** - Notifications using Laravel collections and scopes
 
 ### **👥 User Management**  
-- ✅ **Pharmacist Registration** - Create new pharmacist accounts
-- ✅ **User List** - View all system users (admin, pharmacist)
-- ✅ **User Status** - Enable/disable user accounts
-- ✅ **Password Reset** - Reset user passwords
+- ✅ **Pharmacist Registration** - Laravel user creation with role assignment
+- ✅ **User List** - Laravel paginated user listing with Eloquent
+- ✅ **User Status** - Enable/disable using Laravel model updates
+- ✅ **Password Reset** - Laravel built-in password reset functionality
 
 ### **💊 Drug Management (Full Control)**
-- ✅ **Add New Drug** - Complete drug information entry
-- ✅ **Edit Drug** - Update drug details, pricing, stock
-- ✅ **Delete Drug** - Remove drugs from system
-- ✅ **Drug Status** - Set active/inactive status
-- ✅ **Drug List** - Searchable table with all drugs
-- ✅ **Stock Management** - Update stock levels
+- ✅ **Add New Drug** - Laravel resource controller with form validation
+- ✅ **Edit Drug** - Laravel model updates with request validation
+- ✅ **Delete Drug** - Laravel soft deletes with model protection
+- ✅ **Drug Status** - Laravel enum handling for active/inactive
+- ✅ **Drug List** - Laravel paginated listing with search scopes
+- ✅ **Stock Management** - Laravel model methods for inventory updates
 
 ### **🏢 Supplier Management**
-- ✅ **Add Supplier** - Register new suppliers
-- ✅ **Edit Supplier** - Update supplier information
-- ✅ **Supplier List** - View all suppliers
-- ✅ **Supplier Status** - Manage supplier relationships
+- ✅ **Add Supplier** - Laravel resource controller for supplier CRUD
+- ✅ **Edit Supplier** - Laravel form requests with validation rules
+- ✅ **Supplier List** - Laravel Eloquent collections with filtering
+- ✅ **Supplier Status** - Laravel model attribute management
 
 ### **👥 Customer Management**
-- ✅ **Customer List** - View all registered customers
-- ✅ **Customer Details** - View customer information and history
-- ✅ **Customer Search** - Find customers by name/phone
+- ✅ **Customer List** - Laravel paginated customer listing
+- ✅ **Customer Details** - Laravel model relationships for history
+- ✅ **Customer Search** - Laravel query scopes for searching
 
 ### **📊 Sales Reports**
-- ✅ **Daily Sales** - Sales summary by date
-- ✅ **Sales by Drug** - Top selling medications
-- ✅ **Sales by Pharmacist** - Performance tracking
-- ✅ **Revenue Reports** - Income analysis
+- ✅ **Daily Sales** - Laravel query builder for date-based reports
+- ✅ **Sales by Drug** - Laravel Eloquent relationships and aggregates
+- ✅ **Sales by Pharmacist** - Laravel user performance tracking
+- ✅ **Revenue Reports** - Laravel collection methods for analysis
 
 ### **📦 Purchase Management**
-- ✅ **Create Purchase Order** - Order from suppliers
-- ✅ **Purchase History** - View all purchase transactions
-- ✅ **Supplier Performance** - Track delivery and pricing
+- ✅ **Create Purchase Order** - Laravel resource controllers
+- ✅ **Purchase History** - Laravel model relationships and scopes
+- ✅ **Supplier Performance** - Laravel aggregate queries
 
-**Pages:**
-- `admin/dashboard.php`
-- `admin/users.php`, `admin/user-form.php`
-- `admin/drugs.php`, `admin/drug-form.php`
-- `admin/suppliers.php`, `admin/supplier-form.php`
-- `admin/customers.php`
-- `admin/reports.php`
-- `admin/purchases.php`
+**Controllers:**
+- `AdminController`, `DrugController`, `SupplierController`
+- `CustomerController`, `ReportController`, `PurchaseController`
 
-**Controllers:** `AdminController.php`, `DrugController.php`, `ReportController.php`
+**Models:**
+- `User`, `Drug`, `Supplier`, `Customer`, `Sale`, `Purchase`
+
+**Views:**
+- `admin/dashboard.blade.php`
+- `admin/users/index.blade.php`, `admin/users/create.blade.php`
+- `admin/drugs/index.blade.php`, `admin/drugs/create.blade.php`
+- `admin/suppliers/index.blade.php`, `admin/reports/index.blade.php`
+
+**Routes:** Laravel resource routes with admin middleware protection
 
 ---
 
 ## **⚕️ Pharmacist Role Features**
 
 ### **🏠 Pharmacist Dashboard**
-- ✅ **Daily Overview** - Today's sales, stock alerts
-- ✅ **Quick Drug Search** - Fast drug lookup
-- ✅ **Recent Transactions** - Latest sales activity
-- ✅ **Stock Alerts** - Low stock notifications
+- ✅ **Daily Overview** - Laravel Eloquent queries for today's data
+- ✅ **Quick Drug Search** - Laravel search scopes with AJAX
+- ✅ **Recent Transactions** - Laravel model relationships for history
+- ✅ **Stock Alerts** - Laravel query scopes for low stock items
 
 ### **💰 Sales Processing**
-- ✅ **New Sale Transaction** - Process customer purchases
-- ✅ **Drug Search** - Real-time drug search during sales
-- ✅ **Calculate Total** - Automatic pricing with discounts
-- ✅ **Receipt Generation** - Print/display sales receipt
-- ✅ **Customer Selection** - Link sale to customer account
+- ✅ **New Sale Transaction** - Laravel transaction controllers
+- ✅ **Drug Search** - Real-time search using Laravel API routes
+- ✅ **Calculate Total** - Laravel model methods for pricing
+- ✅ **Receipt Generation** - Laravel PDF generation or Blade views
+- ✅ **Customer Selection** - Laravel form selects with relationships
 
 ### **📋 Sales History**
-- ✅ **Transaction List** - View all processed sales
-- ✅ **Transaction Details** - Detailed view of each sale
-- ✅ **Search/Filter** - Find transactions by date, customer, drug
-- ✅ **Sales Summary** - Daily/weekly performance
+- ✅ **Transaction List** - Laravel paginated sales with filtering
+- ✅ **Transaction Details** - Laravel model relationships for details
+- ✅ **Search/Filter** - Laravel query scopes and request filters
+- ✅ **Sales Summary** - Laravel collection aggregation methods
 
 ### **💊 Drug Operations**
-- ✅ **Drug Search** - Quick drug lookup with details
-- ✅ **Add Stock** - Increase drug inventory
-- ✅ **Update Drug Info** - Basic drug information updates
-- ✅ **Stock Check** - Current inventory levels
+- ✅ **Drug Search** - Laravel Eloquent search with full-text
+- ✅ **Add Stock** - Laravel model methods for inventory updates
+- ✅ **Update Drug Info** - Laravel resource controllers with validation
+- ✅ **Stock Check** - Laravel model accessors for current levels
 
 ### **👥 Customer Service**
-- ✅ **Customer Registration** - Register new customers during sales
-- ✅ **Customer Lookup** - Find existing customers
-- ✅ **Purchase History** - View customer buying patterns
+- ✅ **Customer Registration** - Laravel user creation during sales
+- ✅ **Customer Lookup** - Laravel search functionality
+- ✅ **Purchase History** - Laravel relationship queries
 
-**Pages:**
-- `pharmacist/dashboard.php`
-- `pharmacist/sales.php`, `pharmacist/new-sale.php`
-- `pharmacist/sales-history.php`
-- `pharmacist/drugs.php`
-- `pharmacist/customers.php`
+**Controllers:**
+- `PharmacistController`, `SaleController`, `DrugController`
 
-**Controllers:** `PharmacistController.php`, `SaleController.php`
+**Models:**
+- `Sale`, `SaleDetail`, `Drug`, `Customer`
+
+**Views:**
+- `pharmacist/dashboard.blade.php`
+- `pharmacist/sales/index.blade.php`, `pharmacist/sales/create.blade.php`
+- `pharmacist/drugs/index.blade.php`
+
+**Routes:** Laravel resource routes with pharmacist middleware
 
 ---
 
 ## **🛍️ Customer Role Features**
 
 ### **🏠 Customer Dashboard**
-- ✅ **Personal Overview** - Account information summary
-- ✅ **Recent Purchases** - Latest buying activity
-- ✅ **Account Status** - Profile completion, activity
+- ✅ **Personal Overview** - Laravel user profile with relationships
+- ✅ **Recent Purchases** - Laravel model relationships for history
+- ✅ **Account Status** - Laravel user model attributes and scopes
 
 ### **💊 Drug Catalog**
-- ✅ **Browse Drugs** - View available medications
-- ✅ **Drug Search** - Search by name, category, type
-- ✅ **Drug Details** - Detailed drug information and pricing
-- ✅ **Availability Check** - Stock status display
+- ✅ **Browse Drugs** - Laravel paginated drug catalog
+- ✅ **Drug Search** - Laravel search scopes with filtering
+- ✅ **Drug Details** - Laravel resource routes for drug information
+- ✅ **Availability Check** - Laravel model accessors for stock status
 
 ### **📋 Purchase History**
-- ✅ **Transaction History** - All past purchases
-- ✅ **Transaction Details** - Detailed view of each purchase
-- ✅ **Search History** - Find past transactions
+- ✅ **Transaction History** - Laravel relationship queries
+- ✅ **Transaction Details** - Laravel nested relationships
+- ✅ **Search History** - Laravel query scopes with date filtering
 
 ### **⚙️ Account Management**
-- ✅ **Profile Settings** - Update personal information
-- ✅ **Contact Information** - Update address, phone
+- ✅ **Profile Settings** - Laravel user profile updates
+- ✅ **Contact Information** - Laravel form requests with validation
 
-**Pages:**
-- `customer/dashboard.php`
-- `customer/catalog.php`, `customer/drug-details.php`
-- `customer/history.php`
-- `customer/profile.php`
+**Controllers:**
+- `CustomerController`, `ProfileController`
 
-**Controllers:** `CustomerController.php`
+**Models:**
+- `User`, `Customer`, `Sale`, `Drug`
+
+**Views:**
+- `customer/dashboard.blade.php`
+- `customer/catalog/index.blade.php`, `customer/catalog/show.blade.php`
+- `customer/profile/edit.blade.php`
+
+**Routes:** Laravel authentication routes with customer middleware
 
 ---
 
 ## **🌐 Public Pages (No Authentication)**
 
 ### **Home & Information**
-- ✅ **Home Page** - Drug catalog display for visitors
-- ✅ **Drug Search** - Public drug search functionality
-- ✅ **Drug Information** - View drug details and availability
+- ✅ **Home Page** - Laravel welcome route with drug catalog
+- ✅ **Drug Search** - Public Laravel API routes for search
+- ✅ **Drug Information** - Laravel resource routes for public access
 
 ### **Registration**
-- ✅ **Customer Registration** - Self-service account creation
-- ✅ **Registration Validation** - Input validation and verification
+- ✅ **Customer Registration** - Laravel registration controller
+- ✅ **Registration Validation** - Laravel form request validation
 
-**Pages:**
-- `index.php` (home)
-- `register.php`
-- `drug-catalog.php`
-
----
-
-## **📊 Core Database Operations (All Roles)**
-
-### **Essential CRUD Operations**
-
-**Drugs (Tabel_Obat):**
-- ✅ Create: Add new drugs
-- ✅ Read: View drug details, search, list
-- ✅ Update: Edit drug information, stock, pricing
-- ✅ Delete: Remove drugs (Admin only)
-
-**Sales (Penjualan + Penjualan_Detail):**
-- ✅ Create: Process new sales transactions
-- ✅ Read: View sales history, reports
-- ✅ Update: Edit transaction details (limited)
-- ✅ Delete: Cancel transactions (Admin only)
-
-**Customers (Tabel_Pelanggan):**
-- ✅ Create: Register new customers
-- ✅ Read: View customer information, history
-- ✅ Update: Edit customer details
-- ✅ Delete: Remove customers (Admin only)
-
-**Suppliers (Tabel_Supplier):**
-- ✅ Create: Add new suppliers (Admin/Pharmacist)
-- ✅ Read: View supplier information
-- ✅ Update: Edit supplier details
-- ✅ Delete: Remove suppliers (Admin only)
+**Controllers:** `HomeController`, `RegisterController`
+**Views:** `welcome.blade.php`, `auth/register.blade.php`
+**Routes:** Laravel public routes without middleware
 
 ---
 
-## **🔧 Technical Features (System-wide)**
+## **📊 Core Laravel Database Operations (All Roles)**
+
+### **Essential CRUD Operations with Laravel**
+
+**Drugs (Drug Model):**
+- ✅ Create: Laravel resource controller store methods
+- ✅ Read: Laravel Eloquent queries and relationships
+- ✅ Update: Laravel resource controller update methods
+- ✅ Delete: Laravel soft deletes and model protection
+
+**Sales (Sale + SaleDetail Models):**
+- ✅ Create: Laravel transaction processing with Eloquent
+- ✅ Read: Laravel relationship queries and scopes
+- ✅ Update: Laravel model updates with validation
+- ✅ Delete: Laravel soft deletes with business rules
+
+**Customers (Customer Model):**
+- ✅ Create: Laravel user registration with relationships
+- ✅ Read: Laravel Eloquent queries with eager loading
+- ✅ Update: Laravel form requests with validation
+- ✅ Delete: Laravel soft deletes with data integrity
+
+**Suppliers (Supplier Model):**
+- ✅ Create: Laravel resource controllers with validation
+- ✅ Read: Laravel Eloquent collections and filtering
+- ✅ Update: Laravel model updates with relationships
+- ✅ Delete: Laravel constraint checking before deletion
+
+---
+
+## **🔧 Laravel Technical Features (System-wide)**
 
 ### **Security & Validation**
-- ✅ **Input Sanitization** - XSS prevention
-- ✅ **SQL Injection Prevention** - Prepared statements
-- ✅ **Role-based Access Control** - Page-level permissions
-- ✅ **Session Security** - Secure session management
+- ✅ **Laravel Validation** - Form request validation with rules
+- ✅ **CSRF Protection** - Automatic Laravel CSRF token validation
+- ✅ **Laravel Middleware** - Role-based access control
+- ✅ **Laravel Auth** - Secure session and authentication management
 
 ### **User Experience**
-- ✅ **Responsive Design** - Mobile-friendly interface
-- ✅ **Ajax Search** - Real-time search functionality
-- ✅ **Form Validation** - Client & server-side validation
-- ✅ **Success/Error Messages** - User feedback system
+- ✅ **Laravel Blade** - Component-based responsive design
+- ✅ **Laravel API Routes** - Real-time search functionality
+- ✅ **Laravel Validation** - Client & server-side validation
+- ✅ **Laravel Flash Messages** - User feedback system
 
 ### **Performance**
-- ✅ **Database Optimization** - Indexed queries
-- ✅ **Caching** - Session and query caching
-- ✅ **Lazy Loading** - Efficient data loading
+- ✅ **Laravel Eloquent** - Optimized database queries
+- ✅ **Laravel Caching** - Query and view caching
+- ✅ **Laravel Pagination** - Efficient data loading
 
 ---
 
-## **📅 Development Schedule (7 Days)**
+## **📅 Laravel Development Schedule (7 Days)**
 
-### **Day 1-2: Foundation (30%)**
-- ✅ Database setup with all MVP tables
-- ✅ Authentication system (login/logout/sessions)
-- ✅ User management (Admin can create pharmacists)
-- ✅ Basic dashboard templates for each role
+### **Day 1-2: Laravel Foundation (30%)**
+- ✅ Laravel application setup and database migrations
+- ✅ Laravel authentication system with role middleware
+- ✅ User management with Laravel resource controllers
+- ✅ Blade layout templates with Sneat integration
 
-### **Day 3-4: Core Features (60%)**
-- ✅ Drug management (full CRUD for Admin/Pharmacist)
-- ✅ Customer management (registration, editing)
-- ✅ Supplier management (basic CRUD)
-- ✅ Drug search and catalog display
+### **Day 3-4: Laravel Core Features (60%)**
+- ✅ Drug management with Laravel Eloquent models
+- ✅ Customer management with Laravel relationships
+- ✅ Supplier management with Laravel validation
+- ✅ Laravel API routes for search functionality
 
-### **Day 5-6: Business Logic (90%)**
-- ✅ Sales transaction processing
-- ✅ Sales history and reporting
-- ✅ Purchase order management
-- ✅ Customer portal (catalog browsing, history)
+### **Day 5-6: Laravel Business Logic (90%)**
+- ✅ Sales transaction processing with Laravel controllers
+- ✅ Purchase order management with Laravel models
+- ✅ Laravel reporting with query builder and collections
+- ✅ Customer portal with Laravel authentication
 
-### **Day 7: Polish & Testing (100%)**
-- ✅ UI/UX improvements
-- ✅ Security testing and validation
-- ✅ Performance optimization
-- ✅ End-to-end testing for all roles
+### **Day 7: Laravel Polish & Testing (100%)**
+- ✅ Laravel feature tests for all CRUD operations
+- ✅ Laravel validation and security testing
+- ✅ Blade component improvements and UI polish
+- ✅ Laravel deployment optimization
 
 ---
 
 ## **⚡ Out of Scope for MVP**
 
 **Features to Skip (for speed):**
-- ❌ Advanced reporting with charts/graphs
-- ❌ Email notifications
-- ❌ Drug expiry tracking (manual process)
-- ❌ Automated reorder alerts
-- ❌ Multi-location support
-- ❌ Print receipt functionality (basic HTML receipt only)
-- ❌ Advanced user permissions (role-based is sufficient)
-- ❌ Audit trail logging
-- ❌ Data export/import features
+- ❌ Advanced Laravel job queues for background processing
+- ❌ Laravel notification system for emails
+- ❌ Advanced Laravel policies beyond basic middleware
+- ❌ Laravel Nova admin panel (use custom admin)
+- ❌ Laravel Horizon for queue monitoring
+- ❌ Advanced Laravel testing beyond basic feature tests
 
 **Technical Debt Acceptable:**
-- ❌ Code optimization (focus on functionality)
-- ❌ Advanced error handling (basic is sufficient)
-- ❌ Unit testing (manual testing only)
-- ❌ Performance tuning (basic optimization only)
+- ❌ Laravel code optimization (focus on functionality)
+- ❌ Advanced Laravel caching strategies
+- ❌ Comprehensive Laravel unit testing
+- ❌ Laravel performance tuning beyond basic
 
 ---
 
-## **✅ Success Criteria**
+## **✅ Laravel Success Criteria**
 
 **Functional Requirements:**
-- All 3 user roles can login and access appropriate features
-- Admin can manage drugs, users, suppliers, and view reports
-- Pharmacist can process sales and manage inventory
-- Customer can browse catalog and view purchase history
-- All CRUD operations work correctly
-- Role-based access control enforced
+- All 3 user roles using Laravel authentication and middleware
+- Admin managing resources through Laravel controllers
+- Pharmacist processing sales through Laravel transactions
+- Customer browsing catalog through Laravel public routes
+- All CRUD operations using Laravel Eloquent models
+- Role-based access enforced through Laravel middleware
 
 **Technical Requirements:**
-- Professional UI using Sneat Bootstrap template
-- Responsive design works on desktop and mobile
-- Basic security measures implemented
-- Database operations are secure and efficient
-- System handles concurrent users appropriately
+- Professional UI using Laravel Blade templates with Sneat
+- Responsive design using Laravel Mix/Vite asset compilation
+- Security using Laravel's built-in authentication and validation
+- Database operations using Laravel Eloquent ORM
+- System handling concurrent users with Laravel session management
 
 **Business Requirements:**
-- Complete pharmacy workflow supported
-- Sales transactions are accurate and traceable
-- Inventory management is functional
-- Customer information is properly managed
-- Basic reporting provides business insights
+- Complete pharmacy workflow using Laravel MVC architecture
+- Sales transactions using Laravel model relationships
+- Inventory management using Laravel Eloquent methods
+- Customer information managed through Laravel user system
+- Reporting using Laravel query builder and collections
 
 ---
 
-**Note:** This feature set is designed for rapid MVP delivery while maintaining professional quality. Each feature has been scoped to essential functionality that can be implemented efficiently within the 1-week timeline.
+**Note:** This feature set leverages Laravel's powerful framework capabilities for rapid MVP delivery while maintaining professional code quality and scalability. Each feature utilizes Laravel's conventions and best practices for efficient development within the 1-week timeline.
