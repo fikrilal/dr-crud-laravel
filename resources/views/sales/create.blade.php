@@ -78,7 +78,7 @@
 
         <div class="col-lg-4">
             <!-- Customer & Payment -->
-            <form id="saleForm" method="POST" action="{{ route('sales.store') }}">
+                            <form id="saleForm" method="POST" action="{{ route('sales.store') }}" onsubmit="return false;">
                 @csrf
                 <div class="card mb-4">
                     <div class="card-header">
@@ -127,7 +127,7 @@
 
                 <!-- Action Buttons -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-success btn-lg" id="processSaleBtn" disabled>
+                    <button type="button" class="btn btn-success btn-lg" id="processSaleBtn" disabled onclick="processSale(event)">
                         <i class="bi bi-check-circle me-2"></i>Process Sale
                     </button>
                     <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary">
@@ -351,17 +351,19 @@ function updateCartSummary() {
 
 function initializeFormValidation() {
     document.getElementById('metode_pembayaran').addEventListener('change', updateCartSummary);
-    
-    document.getElementById('saleForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+}
+
+function processSale(event) {
+    try {
+        event.preventDefault();
         
-        console.log('Form submission started...');
+        console.log('=== SALE PROCESSING STARTED ===');
         console.log('Cart contents:', cart);
         
         if (cart.length === 0) {
             alert('Please add items to cart before processing sale.');
-            console.log('Form submission stopped: Cart is empty');
-            return;
+            console.log('❌ Form submission stopped: Cart is empty');
+            return false;
         }
         
         const paymentMethod = document.getElementById('metode_pembayaran').value;
@@ -369,35 +371,58 @@ function initializeFormValidation() {
         
         if (!paymentMethod) {
             alert('Please select a payment method.');
-            console.log('Form submission stopped: No payment method selected');
-            return;
+            console.log('❌ Form submission stopped: No payment method selected');
+            return false;
         }
         
-        console.log('Adding cart items to form...');
+        console.log('✅ Validation passed. Preparing form data...');
+        
+        const form = document.getElementById('saleForm');
+        
+        // Clear any previous hidden inputs
+        form.querySelectorAll('input[name^="items["]').forEach(input => input.remove());
         
         // Add cart items to form
         cart.forEach((item, index) => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = `items[${index}][drug_id]`;
-            input.value = item.drug_id;
-            this.appendChild(input);
+            const drugInput = document.createElement('input');
+            drugInput.type = 'hidden';
+            drugInput.name = `items[${index}][drug_id]`;
+            drugInput.value = item.drug_id;
+            form.appendChild(drugInput);
             
             const qtyInput = document.createElement('input');
             qtyInput.type = 'hidden';
             qtyInput.name = `items[${index}][jumlah]`;
             qtyInput.value = item.jumlah;
-            this.appendChild(qtyInput);
+            form.appendChild(qtyInput);
             
-            console.log(`Added item ${index}:`, {
+            console.log(`✅ Added item ${index}:`, {
                 drug_id: item.drug_id,
                 jumlah: item.jumlah
             });
         });
         
-        console.log('Submitting form now...');
-        this.submit();
-    });
+        console.log('🚀 Submitting form now...');
+        
+        // Disable button to prevent double submission
+        const button = document.getElementById('processSaleBtn');
+        button.disabled = true;
+        button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing...';
+        
+        // Submit the form
+        form.submit();
+        
+    } catch (error) {
+        console.error('❌ Error in processSale function:', error);
+        alert('An error occurred while processing the sale. Please check the console for details.');
+        
+        // Re-enable button
+        const button = document.getElementById('processSaleBtn');
+        button.disabled = false;
+        button.innerHTML = '<i class="bi bi-check-circle me-2"></i>Process Sale';
+        
+        return false;
+    }
 }
 
 function initializeNewCustomerForm() {
