@@ -26,9 +26,9 @@ class SaleController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('kode_transaksi', 'LIKE', "%{$search}%")
+                $q->where('nota', 'LIKE', "%{$search}%")
                   ->orWhereHas('customer', function($cq) use ($search) {
-                      $cq->where('nama_pelanggan', 'LIKE', "%{$search}%");
+                      $cq->where('nm_pelanggan', 'LIKE', "%{$search}%");
                   });
             });
         }
@@ -43,11 +43,11 @@ class SaleController extends Controller
 
         // Filter by payment method
         if ($request->filled('payment_method')) {
-            $query->where('metode_pembayaran', $request->payment_method);
+            $query->where('payment_method', $request->payment_method);
         }
 
         $sales = $query->paginate(15);
-        $paymentMethods = Sale::distinct()->pluck('metode_pembayaran')->filter();
+        $paymentMethods = Sale::distinct()->pluck('payment_method')->filter();
         
         return view('sales.index', compact('sales', 'paymentMethods'));
     }
@@ -74,24 +74,25 @@ class SaleController extends Controller
 
             // Create sale record
             $sale = Sale::create([
-                'kode_transaksi' => $kodeTransaksi,
-                'tanggal_transaksi' => now(),
-                'customer_id' => $request->customer_id,
+                'nota' => $kodeTransaksi,
+                'tgl_nota' => now(),
+                'kd_pelanggan' => $request->customer_id,
                 'user_id' => Auth::id(),
-                'total_harga' => 0, // Will be calculated
-                'metode_pembayaran' => $request->metode_pembayaran,
-                'status' => 'completed'
+                'total_before_discount' => 0, // Will be calculated
+                'total_after_discount' => 0, // Will be calculated
+                'payment_method' => $request->metode_pembayaran,
+                'diskon' => 0
             ]);
 
             $totalHarga = 0;
 
             // Process each cart item
             foreach ($request->items as $item) {
-                $drug = Drug::findOrFail($item['drug_id']);
+                $drug = Drug::where('kd_obat', $item['drug_id'])->firstOrFail();
                 
                 // Check stock availability
                 if ($drug->stok < $item['jumlah']) {
-                    throw new \Exception("Insufficient stock for {$drug->nama_obat}. Available: {$drug->stok}, Requested: {$item['jumlah']}");
+                    throw new \Exception("Insufficient stock for {$drug->nm_obat}. Available: {$drug->stok}, Requested: {$item['jumlah']}");
                 }
 
                 $hargaSatuan = $drug->harga_jual;
@@ -100,8 +101,8 @@ class SaleController extends Controller
 
                 // Create sale detail
                 SaleDetail::create([
-                    'sale_id' => $sale->id,
-                    'drug_id' => $drug->id,
+                    'nota' => $sale->nota,
+                    'kd_obat' => $drug->kd_obat,
                     'jumlah' => $item['jumlah'],
                     'harga_satuan' => $hargaSatuan,
                     'subtotal' => $subtotal
@@ -112,7 +113,10 @@ class SaleController extends Controller
             }
 
             // Update sale total
-            $sale->update(['total_harga' => $totalHarga]);
+            $sale->update([
+                'total_before_discount' => $totalHarga,
+                'total_after_discount' => $totalHarga
+            ]);
 
             DB::commit();
 
@@ -175,21 +179,25 @@ class SaleController extends Controller
         ]);
 
         try {
+            // Generate customer ID
+            $customerId = 'C' . date('Ymd') . str_pad(Customer::whereDate('created_at', today())->count() + 1, 3, '0', STR_PAD_LEFT);
+            
             $customer = Customer::create([
-                'nama_pelanggan' => $request->nama_pelanggan,
-                'nomor_telepon' => $request->nomor_telepon,
+                'kd_pelanggan' => $customerId,
+                'nm_pelanggan' => $request->nama_pelanggan,
+                'telpon' => $request->nomor_telepon,
                 'alamat' => $request->alamat ?? '',
                 'tanggal_lahir' => null,
-                'jenis_kelamin' => $request->jenis_kelamin ?? 'tidak_diketahui',
+                'jenis_kelamin' => $request->jenis_kelamin ?? 'L',
                 'status' => 'active'
             ]);
 
             return response()->json([
                 'success' => true,
                 'customer' => [
-                    'id' => $customer->id,
-                    'nama_pelanggan' => $customer->nama_pelanggan,
-                    'nomor_telepon' => $customer->nomor_telepon
+                    'id' => $customer->kd_pelanggan,
+                    'nama_pelanggan' => $customer->nm_pelanggan,
+                    'nomor_telepon' => $customer->telpon
                 ]
             ]);
         } catch (\Exception $e) {
@@ -218,9 +226,9 @@ class SaleController extends Controller
         $thisMonth = now()->startOfMonth();
 
         $stats = [
-            'today_sales' => Sale::whereDate('created_at', $today)->sum('total_harga'),
+            'today_sales' => Sale::whereDate('created_at', $today)->sum('total_after_discount'),
             'today_transactions' => Sale::whereDate('created_at', $today)->count(),
-            'month_sales' => Sale::where('created_at', '>=', $thisMonth)->sum('total_harga'),
+            'month_sales' => Sale::where('created_at', '>=', $thisMonth)->sum('total_after_discount'),
             'month_transactions' => Sale::where('created_at', '>=', $thisMonth)->count(),
             'recent_sales' => Sale::with(['customer', 'user'])
                 ->orderBy('created_at', 'desc')
@@ -228,10 +236,10 @@ class SaleController extends Controller
                 ->get()
                 ->map(function($sale) {
                     return [
-                        'id' => $sale->id,
-                        'kode_transaksi' => $sale->kode_transaksi,
-                        'customer_name' => $sale->customer->nama_pelanggan ?? 'Walk-in Customer',
-                        'total_harga' => $sale->total_harga,
+                        'id' => $sale->nota,
+                        'kode_transaksi' => $sale->nota,
+                        'customer_name' => $sale->customer->nm_pelanggan ?? 'Walk-in Customer',
+                        'total_harga' => $sale->total_after_discount,
                         'created_at' => $sale->created_at->format('H:i'),
                         'pharmacist' => $sale->user->name
                     ];

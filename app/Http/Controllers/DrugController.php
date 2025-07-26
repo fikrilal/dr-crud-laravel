@@ -22,18 +22,18 @@ class DrugController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('nama_obat', 'LIKE', "%{$search}%")
-                  ->orWhere('kategori', 'LIKE', "%{$search}%")
-                  ->orWhere('bentuk_obat', 'LIKE', "%{$search}%")
+                $q->where('nm_obat', 'LIKE', "%{$search}%")
+                  ->orWhere('jenis', 'LIKE', "%{$search}%")
+                  ->orWhere('satuan', 'LIKE', "%{$search}%")
                   ->orWhereHas('supplier', function($sq) use ($search) {
-                      $sq->where('nama_supplier', 'LIKE', "%{$search}%");
+                      $sq->where('nm_supplier', 'LIKE', "%{$search}%");
                   });
             });
         }
 
         // Filter by category
         if ($request->filled('category')) {
-            $query->where('kategori', $request->category);
+            $query->where('jenis', $request->category);
         }
 
         // Filter by stock status
@@ -46,7 +46,7 @@ class DrugController extends Controller
         }
 
         $drugs = $query->latest()->paginate(15);
-        $categories = Drug::distinct()->pluck('kategori')->filter();
+        $categories = Drug::distinct()->pluck('jenis')->filter();
         
         return view('drugs.index', compact('drugs', 'categories'));
     }
@@ -126,12 +126,21 @@ class DrugController extends Controller
             return response()->json([]);
         }
 
-        $drugs = Drug::where('nama_obat', 'LIKE', "%{$query}%")
+        $drugs = Drug::where('nm_obat', 'LIKE', "%{$query}%")
             ->where('stok', '>', 0)
             ->where('status', 'active')
-            ->select('id', 'nama_obat', 'harga_jual', 'stok', 'bentuk_obat')
+            ->select('kd_obat as id', 'nm_obat', 'harga_jual', 'stok', 'satuan')
             ->limit(10)
-            ->get();
+            ->get()
+            ->map(function($drug) {
+                return [
+                    'id' => $drug->kd_obat,
+                    'nama_obat' => $drug->nm_obat,
+                    'harga_jual' => $drug->harga_jual,
+                    'stok' => $drug->stok,
+                    'bentuk_obat' => $drug->satuan
+                ];
+            });
 
         return response()->json($drugs);
     }

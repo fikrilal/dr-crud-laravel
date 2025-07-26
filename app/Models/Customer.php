@@ -31,6 +31,27 @@ class Customer extends Model
         'jenis_kelamin' => 'string',
     ];
 
+    // Attribute Accessors for Laravel-style property names
+    public function getNamaPelangganAttribute()
+    {
+        return $this->nm_pelanggan;
+    }
+
+    public function setNamaPelangganAttribute($value)
+    {
+        $this->attributes['nm_pelanggan'] = $value;
+    }
+
+    public function getNomorTeleponAttribute()
+    {
+        return $this->telpon;
+    }
+
+    public function setNomorTeleponAttribute($value)
+    {
+        $this->attributes['telpon'] = $value;
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, 'kd_pelanggan', 'kd_pelanggan');

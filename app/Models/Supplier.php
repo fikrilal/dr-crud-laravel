@@ -28,6 +28,27 @@ class Supplier extends Model
         'status' => 'string',
     ];
 
+    // Attribute Accessors for Laravel-style property names
+    public function getNamaSupplierAttribute()
+    {
+        return $this->nm_supplier;
+    }
+
+    public function setNamaSupplierAttribute($value)
+    {
+        $this->attributes['nm_supplier'] = $value;
+    }
+
+    public function getNomorTeleponAttribute()
+    {
+        return $this->telpon;
+    }
+
+    public function setNomorTeleponAttribute($value)
+    {
+        $this->attributes['telpon'] = $value;
+    }
+
     public function drugs()
     {
         return $this->hasMany(Drug::class, 'kd_supplier', 'kd_supplier');
