@@ -81,7 +81,7 @@ This project uses **Laravel framework** with proper MVC architecture:
 -   **Authentication**: Laravel's built-in authentication with role management
 -   **Templates**: Laravel Blade templates with Sneat Bootstrap integration
 -   **Routing**: Laravel routing system with proper controllers
--   **Frontend**: Bootstrap + jQuery + Vite asset compilation
+-   **Frontend**: Bootstrap 5 + Sneat template for rapid UI development
 
 ### Key Directories
 
@@ -146,12 +146,14 @@ This project uses **Laravel framework** with proper MVC architecture:
 
 ### Frontend Integration
 
-**Sneat Template Integration**:
+**Bootstrap + Sneat Template Integration**:
 
--   Blade layouts with Sneat Bootstrap components
--   Vite asset compilation for CSS/JS
--   Blade components for reusable UI elements
--   Laravel Mix/Vite for asset management
+-   Bootstrap 5 framework for rapid UI development
+-   Sneat Bootstrap admin template for professional design
+-   Blade layouts with pre-built Bootstrap components
+-   Vite asset compilation for CSS/JS optimization
+-   Blade components wrapping Bootstrap elements for reusability
+-   Laravel Mix/Vite for asset management and hot reload
 
 **AJAX Strategy**:
 
@@ -215,13 +217,15 @@ All assets managed by Laravel Vite:
 
 ## Development Priorities
 
-### Laravel-First Approach
+### Laravel + Bootstrap Rapid Development Approach
 
-This MVP leverages Laravel's power for rapid development:
+This MVP leverages Laravel and Bootstrap for maximum development speed:
 
 -   **Laravel Artisan** for code generation and scaffolding
+-   **Bootstrap 5** for rapid UI development without custom CSS
+-   **Sneat Template** for professional admin interface components
 -   **Eloquent ORM** for database relationships and queries
--   **Blade templating** for component-based UI
+-   **Blade templating** for component-based UI with Bootstrap integration
 -   **Laravel validation** for form handling and security
 
 ### Security Essentials (Laravel Built-in)
@@ -263,12 +267,15 @@ This MVP leverages Laravel's power for rapid development:
 3. Update Eloquent model relationships
 4. Run migration: `php artisan migrate`
 
-### Integrating New Sneat Components
+### Integrating New Bootstrap/Sneat Components
 
-1. Create Blade component: `php artisan make:component ComponentName`
-2. Copy Sneat HTML structure to Blade component
-3. Add dynamic data using Blade syntax
-4. Include component in views with `<x-component-name />`
+1. Find Bootstrap component in Sneat template documentation
+2. Create Blade component: `php artisan make:component ComponentName`
+3. Copy Bootstrap/Sneat HTML structure to Blade component
+4. Add Laravel Blade syntax for dynamic data
+5. Ensure Bootstrap CSS/JS dependencies are loaded
+6. Include component in views with `<x-component-name />`
+7. Test responsive behavior across device sizes
 
 ## Documentation References
 
@@ -371,11 +378,13 @@ php artisan optimize:clear
 -   **Database**: Eloquent ORM with powerful relationships
 -   **Testing**: Built-in testing framework with PHPUnit
 
-### Frontend Technology Choices
+### Frontend Technology Choices (Bootstrap-First)
 
--   **Bootstrap 5**: Via Sneat template for professional UI
+-   **Bootstrap 5**: Primary CSS framework for rapid UI development
+-   **Sneat Admin Template**: Professional Bootstrap-based admin interface
 -   **Laravel Vite**: Modern asset compilation and hot reload
--   **Alpine.js/Vue.js**: For reactive components
+-   **jQuery**: For Bootstrap component interactions and AJAX
+-   **Alpine.js/Vue.js**: For reactive components (when Bootstrap isn't sufficient)
 -   **Laravel Echo**: For real-time features (if needed)
 
 ### Database Technology
@@ -383,6 +392,47 @@ php artisan optimize:clear
 -   **MySQL/MariaDB**: Standard Laravel database choice
 -   **Laravel Migrations**: Version-controlled schema changes
 -   **Eloquent ORM**: Rich model relationships and query builder
+
+## Bootstrap + Laravel Development Strategy
+
+### Bootstrap-First UI Development
+
+-   **Use Bootstrap Components**: Leverage Bootstrap 5 components instead of custom CSS
+-   **Sneat Template**: Utilize pre-built Sneat admin components for consistency
+-   **Responsive Design**: Use Bootstrap's grid system and utilities for mobile-first design
+-   **Form Components**: Use Bootstrap form classes with Laravel Blade for rapid form development
+-   **Data Tables**: Implement Bootstrap tables with Laravel pagination
+-   **Modal Forms**: Use Bootstrap modals for CRUD operations without page reloads
+-   **Navigation**: Utilize Bootstrap navbar and sidebar components from Sneat
+
+### Bootstrap Integration Examples
+
+```blade
+<!-- Bootstrap Card with Laravel Blade -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">{{ $title }}</h5>
+    </div>
+    <div class="card-body">
+        @foreach($items as $item)
+            <p class="card-text">{{ $item->name }}</p>
+        @endforeach
+    </div>
+</div>
+
+<!-- Bootstrap Form with Laravel -->
+<form method="POST" action="{{ route('drugs.store') }}" class="row g-3">
+    @csrf
+    <div class="col-md-6">
+        <label class="form-label">Drug Name</label>
+        <input type="text" class="form-control @error('name') is-invalid @enderror"
+               name="name" value="{{ old('name') }}">
+        @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</form>
+```
 
 ## Laravel Best Practices for This Project
 
