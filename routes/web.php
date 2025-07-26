@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DrugController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,12 +40,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     })->name('reports.index');
 });
 
+// Drug Management Routes (Admin & Pharmacist)
+Route::middleware(['auth'])->group(function () {
+    Route::resource('drugs', DrugController::class);
+    Route::get('/api/drugs/search', [DrugController::class, 'search'])->name('drugs.search');
+    Route::patch('/drugs/{drug}/stock', [DrugController::class, 'updateStock'])->name('drugs.updateStock');
+});
+
 // Pharmacist Routes
 Route::middleware(['auth', 'pharmacist'])->prefix('pharmacist')->name('pharmacist.')->group(function () {
-    Route::get('/drugs', function () {
-        return view('pharmacist.drugs.index');
-    })->name('drugs.index');
-    
     Route::get('/sales', function () {
         return view('pharmacist.sales.index');
     })->name('sales.index');
