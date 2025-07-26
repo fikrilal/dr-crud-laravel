@@ -123,7 +123,7 @@
                         </button>
                     </div>
                     <div class="col-md-4">
-                        <a href="{{ route('pharmacist.drugs.index') }}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <a href="{{ route('drugs.index') }}" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
                             <i class="bi bi-search fs-2 mb-2"></i>
                             <span>Search Drugs</span>
                         </a>
@@ -257,7 +257,7 @@
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <a href="{{ route('pharmacist.drugs.index') }}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
+                        <a href="{{ route('drugs.index') }}" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-4">
                             <i class="bi bi-capsule fs-1 mb-3"></i>
                             <span class="h6">Drug Inventory</span>
                             <small class="text-muted">Manage drug stock and information</small>
