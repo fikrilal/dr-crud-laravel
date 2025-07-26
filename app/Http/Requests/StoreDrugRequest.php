@@ -22,7 +22,7 @@ class StoreDrugRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_obat' => 'required|string|max:255|unique:drugs,nama_obat',
+            'nama_obat' => 'required|string|max:255|unique:drugs,nm_obat',
             'kategori' => 'required|string|max:100',
             'bentuk_obat' => 'required|string|max:50',
             'harga_beli' => 'required|numeric|min:0|max:999999999.99',
@@ -35,7 +35,7 @@ class StoreDrugRequest extends FormRequest
             'kontraindikasi' => 'nullable|string|max:1000',
             'dosis_dewasa' => 'nullable|string|max:255',
             'dosis_anak' => 'nullable|string|max:255',
-            'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_id' => 'required|exists:suppliers,kd_supplier',
             'status' => 'required|in:active,inactive',
         ];
     }

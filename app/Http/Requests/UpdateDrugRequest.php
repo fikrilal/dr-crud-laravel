@@ -29,7 +29,7 @@ class UpdateDrugRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('drugs', 'nama_obat')->ignore($drugId)
+                Rule::unique('drugs', 'nm_obat')->ignore($drugId)
             ],
             'kategori' => 'required|string|max:100',
             'bentuk_obat' => 'required|string|max:50',
@@ -43,7 +43,7 @@ class UpdateDrugRequest extends FormRequest
             'kontraindikasi' => 'nullable|string|max:1000',
             'dosis_dewasa' => 'nullable|string|max:255',
             'dosis_anak' => 'nullable|string|max:255',
-            'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_id' => 'required|exists:suppliers,kd_supplier',
             'status' => 'required|in:active,inactive',
         ];
     }
