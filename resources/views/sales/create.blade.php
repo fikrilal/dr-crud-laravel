@@ -355,15 +355,25 @@ function initializeFormValidation() {
     document.getElementById('saleForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        console.log('Form submission started...');
+        console.log('Cart contents:', cart);
+        
         if (cart.length === 0) {
             alert('Please add items to cart before processing sale.');
+            console.log('Form submission stopped: Cart is empty');
             return;
         }
         
-        if (!document.getElementById('metode_pembayaran').value) {
+        const paymentMethod = document.getElementById('metode_pembayaran').value;
+        console.log('Payment method:', paymentMethod);
+        
+        if (!paymentMethod) {
             alert('Please select a payment method.');
+            console.log('Form submission stopped: No payment method selected');
             return;
         }
+        
+        console.log('Adding cart items to form...');
         
         // Add cart items to form
         cart.forEach((item, index) => {
@@ -378,8 +388,14 @@ function initializeFormValidation() {
             qtyInput.name = `items[${index}][jumlah]`;
             qtyInput.value = item.jumlah;
             this.appendChild(qtyInput);
+            
+            console.log(`Added item ${index}:`, {
+                drug_id: item.drug_id,
+                jumlah: item.jumlah
+            });
         });
         
+        console.log('Submitting form now...');
         this.submit();
     });
 }

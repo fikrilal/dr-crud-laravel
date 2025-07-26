@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SaleController extends Controller
 {
@@ -67,6 +68,15 @@ class SaleController extends Controller
     public function store(StoreSaleRequest $request)
     {
         try {
+            // Add detailed logging for debugging
+            Log::info('Sale creation started', [
+                'user_id' => Auth::id(),
+                'customer_id' => $request->customer_id,
+                'payment_method' => $request->metode_pembayaran,
+                'items_count' => count($request->items ?? []),
+                'items' => $request->items
+            ]);
+
             DB::beginTransaction();
 
             // Generate transaction code

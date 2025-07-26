@@ -22,10 +22,10 @@ class StoreSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id' => 'nullable|exists:customers,id',
+            'customer_id' => 'nullable|exists:customers,kd_pelanggan',
             'metode_pembayaran' => 'required|in:cash,credit_card,debit_card,transfer,insurance',
             'items' => 'required|array|min:1',
-            'items.*.drug_id' => 'required|exists:drugs,id',
+            'items.*.drug_id' => 'required|exists:drugs,kd_obat',
             'items.*.jumlah' => 'required|integer|min:1|max:1000',
         ];
     }
