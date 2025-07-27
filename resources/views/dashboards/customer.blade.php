@@ -38,7 +38,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="card-title text-white-50">Available Drugs</h6>
-                        <h2 class="mb-0">1,456</h2>
+                        <h2 class="mb-0">{{ number_format($stats['available_drugs']) }}</h2>
                         <small class="text-white-50">
                             <i class="bi bi-check-circle"></i> In stock
                         </small>
@@ -57,7 +57,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="card-title text-white-50">My Orders</h6>
-                        <h2 class="mb-0">12</h2>
+                        <h2 class="mb-0">{{ $stats['total_orders'] }}</h2>
                         <small class="text-white-50">
                             <i class="bi bi-clock-history"></i> Total orders
                         </small>
@@ -75,14 +75,19 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="card-title text-white-50">Favorites</h6>
-                        <h2 class="mb-0">8</h2>
+                        <h6 class="card-title text-white-50">Cart Items</h6>
+                        <h2 class="mb-0">{{ $stats['cart_count'] }}</h2>
                         <small class="text-white-50">
-                            <i class="bi bi-heart"></i> Saved items
+                            <i class="bi bi-cart"></i> 
+                            @if($stats['cart_count'] > 0)
+                                Ready to checkout
+                            @else
+                                No items
+                            @endif
                         </small>
                     </div>
                     <div class="opacity-75">
-                        <i class="bi bi-star fs-1"></i>
+                        <i class="bi bi-cart fs-1"></i>
                     </div>
                 </div>
             </div>
@@ -94,14 +99,14 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="card-title text-white-50">Categories</h6>
-                        <h2 class="mb-0">24</h2>
+                        <h6 class="card-title text-white-50">Total Spent</h6>
+                        <h2 class="mb-0">Rp {{ number_format($stats['total_spent'], 0, ',', '.') }}</h2>
                         <small class="text-white-50">
-                            <i class="bi bi-grid"></i> Available
+                            <i class="bi bi-wallet"></i> All time
                         </small>
                     </div>
                     <div class="opacity-75">
-                        <i class="bi bi-collection fs-1"></i>
+                        <i class="bi bi-currency-dollar fs-1"></i>
                     </div>
                 </div>
             </div>
@@ -201,7 +206,7 @@
     </div>
 </div>
 
-<!-- Recent Orders & Favorites -->
+<!-- Recent Orders & Cart Preview -->
 <div class="row mb-4">
     <div class="col-lg-6 mb-3">
         <div class="card">
@@ -210,55 +215,59 @@
                 <a href="{{ route('customer.orders.index') }}" class="btn btn-outline-primary btn-sm">View All</a>
             </div>
             <div class="card-body">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                <i class="bi bi-capsule"></i>
+                @if($stats['recent_orders']->count() > 0)
+                    <div class="list-group list-group-flush">
+                        @foreach($stats['recent_orders']->take(3) as $order)
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    @if($order->tipe_transaksi == 'online')
+                                        <i class="bi bi-laptop"></i>
+                                    @else
+                                        <i class="bi bi-shop"></i>
+                                    @endif
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Order #{{ $order->nota }}</h6>
+                                    <small class="text-muted">
+                                        {{ $order->tipe_transaksi == 'online' ? 'Online Order' : 'Direct Purchase' }}
+                                        • Rp {{ number_format($order->total_after_discount, 0, ',', '.') }}
+                                    </small>
+                                </div>
                             </div>
-                            <div>
-                                <h6 class="mb-1">Order #12345</h6>
-                                <small class="text-muted">Paracetamol 500mg, Vitamin C</small>
+                            <div class="text-end">
+                                @if($order->status_pesanan == 'pending')
+                                    <span class="badge bg-warning">Pending</span>
+                                @elseif($order->status_pesanan == 'confirmed')
+                                    <span class="badge bg-info">Confirmed</span>
+                                @elseif($order->status_pesanan == 'completed')
+                                    <span class="badge bg-success">Completed</span>
+                                @elseif($order->status_pesanan == 'rejected')
+                                    <span class="badge bg-danger">Rejected</span>
+                                @else
+                                    <span class="badge bg-secondary">{{ ucfirst($order->status_pesanan ?? 'Unknown') }}</span>
+                                @endif
+                                <br><small class="text-muted">{{ $order->created_at->format('M d, Y') }}</small>
                             </div>
                         </div>
-                        <div class="text-end">
-                            <span class="badge bg-success">Completed</span>
-                            <br><small class="text-muted">Dec 20, 2024</small>
-                        </div>
+                        @endforeach
                     </div>
-                    
-                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-success text-white rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                <i class="bi bi-shield-plus"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Order #12344</h6>
-                                <small class="text-muted">Multivitamins, Omega-3</small>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-warning">Processing</span>
-                            <br><small class="text-muted">Dec 18, 2024</small>
-                        </div>
+                @else
+                    <div class="text-center py-3">
+                        <i class="bi bi-bag-x display-4 text-muted mb-2"></i>
+                        <p class="text-muted">No orders yet</p>
+                        <a href="{{ route('customer.catalog.index') }}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-search me-2"></i>Browse Catalog
+                        </a>
                     </div>
-                    
-                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-info text-white rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                <i class="bi bi-thermometer"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">Order #12343</h6>
-                                <small class="text-muted">Cold medicine, Throat lozenges</small>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-success">Completed</span>
-                            <br><small class="text-muted">Dec 15, 2024</small>
-                        </div>
-                    </div>
+                @endif
+                
+                @if($stats['pending_orders'] > 0)
+                <div class="alert alert-info mt-3 mb-0">
+                    <i class="bi bi-clock me-2"></i>
+                    You have <strong>{{ $stats['pending_orders'] }}</strong> pending order(s) being processed.
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -266,58 +275,59 @@
     <div class="col-lg-6 mb-3">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">My Favorites</h5>
-                <button class="btn btn-outline-secondary btn-sm">
-                    <i class="bi bi-heart"></i> Manage
-                </button>
+                <h5 class="card-title mb-0">Shopping Cart</h5>
+                <a href="{{ route('customer.cart.index') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-cart"></i> View Cart
+                    @if($stats['cart_count'] > 0)
+                        <span class="badge bg-danger ms-2">{{ $stats['cart_count'] }}</span>
+                    @endif
+                </a>
             </div>
             <div class="card-body">
+                @if($stats['cart_count'] > 0)
+                    <div class="alert alert-success d-flex align-items-center mb-3">
+                        <i class="bi bi-cart-check me-2"></i>
+                        <div>
+                            You have <strong>{{ $stats['cart_count'] }}</strong> item(s) in your cart
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('customer.cart.index') }}" class="btn btn-primary">
+                            <i class="bi bi-eye me-2"></i>Review Cart
+                        </a>
+                        <a href="{{ route('customer.checkout') }}" class="btn btn-success">
+                            <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
+                        </a>
+                    </div>
+                @else
+                    <div class="text-center py-3">
+                        <i class="bi bi-cart-x display-4 text-muted mb-2"></i>
+                        <p class="text-muted">Your cart is empty</p>
+                        <a href="{{ route('customer.catalog.index') }}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-search me-2"></i>Start Shopping
+                        </a>
+                    </div>
+                @endif
+                
+                <!-- Quick Add Popular Items -->
+                <hr class="my-3">
+                <h6 class="text-muted small">Popular Items</h6>
                 <div class="row g-2">
                     <div class="col-6">
                         <div class="card border">
-                            <div class="card-body p-3 text-center">
-                                <i class="bi bi-capsule fs-2 text-primary mb-2"></i>
-                                <h6 class="card-title small mb-1">Paracetamol 500mg</h6>
-                                <p class="text-muted small mb-2">$12.50</p>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-cart-plus"></i>
-                                </button>
+                            <div class="card-body p-2 text-center">
+                                <i class="bi bi-capsule fs-5 text-primary mb-1"></i>
+                                <h6 class="card-title small mb-1">Paracetamol</h6>
+                                <small class="text-muted">Pain relief</small>
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="card border">
-                            <div class="card-body p-3 text-center">
-                                <i class="bi bi-shield-plus fs-2 text-success mb-2"></i>
-                                <h6 class="card-title small mb-1">Vitamin C 1000mg</h6>
-                                <p class="text-muted small mb-2">$18.75</p>
-                                <button class="btn btn-outline-success btn-sm">
-                                    <i class="bi bi-cart-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="card border">
-                            <div class="card-body p-3 text-center">
-                                <i class="bi bi-thermometer fs-2 text-info mb-2"></i>
-                                <h6 class="card-title small mb-1">Cold Medicine</h6>
-                                <p class="text-muted small mb-2">$24.30</p>
-                                <button class="btn btn-outline-info btn-sm">
-                                    <i class="bi bi-cart-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="card border">
-                            <div class="card-body p-3 text-center">
-                                <i class="bi bi-bandaid fs-2 text-warning mb-2"></i>
-                                <h6 class="card-title small mb-1">First Aid Kit</h6>
-                                <p class="text-muted small mb-2">$45.00</p>
-                                <button class="btn btn-outline-warning btn-sm">
-                                    <i class="bi bi-cart-plus"></i>
-                                </button>
+                            <div class="card-body p-2 text-center">
+                                <i class="bi bi-shield-plus fs-5 text-success mb-1"></i>
+                                <h6 class="card-title small mb-1">Vitamin C</h6>
+                                <small class="text-muted">Immunity</small>
                             </div>
                         </div>
                     </div>

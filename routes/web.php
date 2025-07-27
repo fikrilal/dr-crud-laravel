@@ -37,7 +37,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('/users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
     
-    // Supplier Management (reuse existing controller)
+    // Supplier Management
     Route::resource('suppliers', SupplierController::class);
     
     // Reports & Analytics
@@ -58,9 +58,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/expiry-alerts/report', [\App\Http\Controllers\ExpiryAlertController::class, 'generateReport'])->name('expiry-alerts.report');
 });
 
-// Supplier Management Routes (Admin & Pharmacist)
-Route::middleware(['auth'])->group(function () {
-    Route::resource('suppliers', SupplierController::class);
+// Supplier API Routes (Admin Only)
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/api/suppliers/search', [SupplierController::class, 'search'])->name('suppliers.search');
 });
 
@@ -95,10 +94,6 @@ Route::middleware(['auth', 'pharmacist'])->prefix('pharmacist')->name('pharmacis
     Route::get('/sales', function () {
         return view('pharmacist.sales.index');
     })->name('sales.index');
-    
-    Route::get('/purchases', function () {
-        return view('pharmacist.purchases.index');
-    })->name('purchases.index');
 });
 
 // Customer Routes
