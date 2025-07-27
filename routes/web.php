@@ -8,6 +8,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Customer\CatalogController;
 use App\Http\Controllers\Customer\OrderController;
+use App\Http\Controllers\OrderManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +73,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('purchases', PurchaseController::class);
     Route::post('/purchases/{purchase}/receive', [PurchaseController::class, 'receive'])->name('purchases.receive');
     Route::post('/purchases/{purchase}/cancel', [PurchaseController::class, 'cancel'])->name('purchases.cancel');
+});
+
+// Order Management Routes (Admin & Pharmacist)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderManagementController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderManagementController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/confirm', [OrderManagementController::class, 'confirm'])->name('orders.confirm');
+    Route::post('/orders/{order}/reject', [OrderManagementController::class, 'reject'])->name('orders.reject');
+    Route::post('/orders/{order}/status', [OrderManagementController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{order}/payment', [OrderManagementController::class, 'updatePaymentStatus'])->name('orders.updatePaymentStatus');
 });
 
 // Pharmacist Routes

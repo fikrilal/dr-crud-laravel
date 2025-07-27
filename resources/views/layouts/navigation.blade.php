@@ -70,6 +70,19 @@
                     <i class="bi bi-bag me-2"></i>
                     Purchase Orders
                 </a>
+                
+                <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
+                    <i class="bi bi-laptop me-2"></i>
+                    Online Orders
+                    @php 
+                        $pendingOrders = \App\Models\Sale::where('tipe_transaksi', 'online')
+                                                         ->where('status_pesanan', 'pending')
+                                                         ->count();
+                    @endphp
+                    @if($pendingOrders > 0)
+                        <span class="badge bg-warning ms-2">{{ $pendingOrders }}</span>
+                    @endif
+                </a>
         </div>
     @endif
 
