@@ -174,30 +174,6 @@
         </a>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="nav-section mt-4 pt-3 border-top border-light border-opacity-25">
-        @if(auth()->user()->user_type === 'admin' || auth()->user()->user_type === 'pharmacist')
-            <button class="btn btn-outline-light btn-sm w-100 mb-2">
-                <i class="bi bi-plus-lg me-2"></i>Quick Sale
-            </button>
-            <button class="btn btn-outline-light btn-sm w-100">
-                <i class="bi bi-capsule me-2"></i>Add Drug
-            </button>
-        @endif
-        
-        @if(auth()->user()->user_type === 'customer')
-            <a href="{{ route('customer.cart.index') }}" class="btn btn-outline-light btn-sm w-100 mb-2">
-                <i class="bi bi-cart me-2"></i>View Cart
-                @php $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0; @endphp
-                @if($cartCount > 0)
-                    <span class="badge bg-danger ms-2">{{ $cartCount }}</span>
-                @endif
-            </a>
-            <a href="{{ route('customer.catalog.index') }}" class="btn btn-outline-light btn-sm w-100">
-                <i class="bi bi-search me-2"></i>Browse Catalog
-            </a>
-        @endif
-    </div>
 
     <!-- User Info (mobile) -->
     <div class="nav-section mt-4 pt-3 border-top border-light border-opacity-25 d-md-none">
