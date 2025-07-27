@@ -40,9 +40,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Supplier Management (reuse existing controller)
     Route::resource('suppliers', SupplierController::class);
     
-    Route::get('/reports', function () {
-        return view('admin.reports.index');
-    })->name('reports.index');
+    // Reports & Analytics
+    Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
 });
 
 // Drug Management Routes (Admin & Pharmacist)
