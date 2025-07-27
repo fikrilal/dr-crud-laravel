@@ -50,6 +50,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('drugs', DrugController::class);
     Route::get('/api/drugs/search', [DrugController::class, 'search'])->name('drugs.search');
     Route::patch('/drugs/{drug}/stock', [DrugController::class, 'updateStock'])->name('drugs.updateStock');
+    
+    // Expiry Alerts Routes
+    Route::get('/expiry-alerts', [\App\Http\Controllers\ExpiryAlertController::class, 'index'])->name('expiry-alerts.index');
+    Route::post('/expiry-alerts/{drug}/mark-checked', [\App\Http\Controllers\ExpiryAlertController::class, 'markAsChecked'])->name('expiry-alerts.mark-checked');
+    Route::post('/expiry-alerts/{drug}/update-expiry', [\App\Http\Controllers\ExpiryAlertController::class, 'updateExpiryDate'])->name('expiry-alerts.update-expiry');
+    Route::get('/expiry-alerts/report', [\App\Http\Controllers\ExpiryAlertController::class, 'generateReport'])->name('expiry-alerts.report');
 });
 
 // Supplier Management Routes (Admin & Pharmacist)

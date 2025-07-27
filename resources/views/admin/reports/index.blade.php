@@ -349,79 +349,11 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-download me-2"></i>Export Reports
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-primary w-100 mb-2" onclick="exportReport('sales', 'csv')">
-                                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Sales Report (CSV)
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-success w-100 mb-2" onclick="exportReport('inventory', 'pdf')">
-                                <i class="bi bi-file-earmark-pdf me-2"></i>Inventory Report (PDF)
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-info w-100 mb-2" onclick="exportReport('customers', 'csv')">
-                                <i class="bi bi-people me-2"></i>Customer Report (CSV)
-                            </button>
-                        </div>
-                        <div class="col-md-3">
-                            <button class="btn btn-outline-warning w-100 mb-2" onclick="exportReport('financial', 'pdf')">
-                                <i class="bi bi-currency-dollar me-2"></i>Financial Report (PDF)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-function exportReport(type, format) {
-    // Show loading state
-    const button = event.target;
-    const originalText = button.innerHTML;
-    button.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Exporting...';
-    button.disabled = true;
-    
-    fetch(`{{ route('admin.reports.export') }}?type=${type}&format=${format}`, {
-        method: 'GET',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Export feature would download the file here');
-        } else {
-            alert('Export failed: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred during export');
-    })
-    .finally(() => {
-        // Restore button state
-        button.innerHTML = originalText;
-        button.disabled = false;
-    });
-}
-
 // Auto-refresh data every 5 minutes
 setInterval(function() {
     if (document.visibilityState === 'visible') {

@@ -26,24 +26,6 @@
             </a>
         </div>
 
-        <div class="nav-section mt-3">
-            <h6 class="text-white-50 text-uppercase small fw-bold">Inventory</h6>
-            
-            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
-                <i class="bi bi-capsule me-2"></i>
-                Drug Management
-            </a>
-            
-            <a class="nav-link" href="#">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                Expiry Alerts
-            </a>
-            
-            <a class="nav-link" href="#">
-                <i class="bi bi-box me-2"></i>
-                Stock Levels
-            </a>
-        </div>
     @endif
 
     <!-- Pharmacist Menu -->
@@ -51,38 +33,53 @@
         <div class="nav-section mt-3">
             <h6 class="text-white-50 text-uppercase small fw-bold">Operations</h6>
             
-                            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
-                    <i class="bi bi-capsule me-2"></i>
-                    Drug Inventory
-                </a>
-                
-                <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
-                    <i class="bi bi-truck me-2"></i>
-                    Supplier Management
-                </a>
-                
-                <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
-                    <i class="bi bi-cart-check me-2"></i>
-                    Sales Processing
-                </a>
-                
-                <a class="nav-link {{ request()->routeIs('purchases.*') ? 'active' : '' }}" href="{{ route('purchases.index') }}">
-                    <i class="bi bi-bag me-2"></i>
-                    Purchase Orders
-                </a>
-                
-                <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
-                    <i class="bi bi-laptop me-2"></i>
-                    Online Orders
-                    @php 
-                        $pendingOrders = \App\Models\Sale::where('tipe_transaksi', 'online')
-                                                         ->where('status_pesanan', 'pending')
-                                                         ->count();
-                    @endphp
-                    @if($pendingOrders > 0)
-                        <span class="badge bg-warning ms-2">{{ $pendingOrders }}</span>
-                    @endif
-                </a>
+            <a class="nav-link {{ request()->routeIs('drugs.*') ? 'active' : '' }}" href="{{ route('drugs.index') }}">
+                <i class="bi bi-capsule me-2"></i>
+                Drug Inventory
+            </a>
+            
+            <a class="nav-link {{ request()->routeIs('expiry-alerts.*') ? 'active' : '' }}" href="{{ route('expiry-alerts.index') }}">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Expiry Alerts
+                @php 
+                    // Simplified critical count - drugs created more than 22 months ago (approaching 2-year expiry)
+                    $criticalDate = \Carbon\Carbon::now()->subMonths(22);
+                    $criticalCount = \App\Models\Drug::where('status', 'active')
+                        ->where('created_at', '<=', $criticalDate)
+                        ->count();
+                @endphp
+                @if($criticalCount > 0)
+                    <span class="badge bg-danger ms-2">{{ $criticalCount }}</span>
+                @endif
+            </a>
+            
+            <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
+                <i class="bi bi-truck me-2"></i>
+                Supplier Management
+            </a>
+            
+            <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
+                <i class="bi bi-cart-check me-2"></i>
+                Sales Processing
+            </a>
+            
+            <a class="nav-link {{ request()->routeIs('purchases.*') ? 'active' : '' }}" href="{{ route('purchases.index') }}">
+                <i class="bi bi-bag me-2"></i>
+                Purchase Orders
+            </a>
+            
+            <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
+                <i class="bi bi-laptop me-2"></i>
+                Online Orders
+                @php 
+                    $pendingOrders = \App\Models\Sale::where('tipe_transaksi', 'online')
+                                                     ->where('status_pesanan', 'pending')
+                                                     ->count();
+                @endphp
+                @if($pendingOrders > 0)
+                    <span class="badge bg-warning ms-2">{{ $pendingOrders }}</span>
+                @endif
+            </a>
         </div>
     @endif
 
