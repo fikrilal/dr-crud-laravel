@@ -33,9 +33,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/users', function () {
-        return view('admin.users.index');
-    })->name('users.index');
+    // User Management
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+    Route::post('/users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
     
     Route::get('/suppliers', function () {
         return view('admin.suppliers.index');
