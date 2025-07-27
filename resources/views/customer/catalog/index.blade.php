@@ -171,7 +171,9 @@
         <!-- Pagination -->
         <div class="row">
             <div class="col-12 d-flex justify-content-center">
-                {{ $drugs->withQueryString()->links() }}
+                <div class="pagination-wrapper">
+                    {{ $drugs->withQueryString()->links('vendor.pagination.custom') }}
+                </div>
             </div>
         </div>
     @else
@@ -214,6 +216,15 @@
 
 .card-title a:hover {
     color: #696cff !important;
+}
+
+.pagination-wrapper {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.pagination-wrapper .pagination {
+    margin-bottom: 0;
 }
 </style>
 
