@@ -28,7 +28,7 @@ Route::get('/', function () {
 
 // Role-based Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
 // Admin Routes

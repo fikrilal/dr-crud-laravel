@@ -165,15 +165,6 @@
                                     </div>
                                 </div>
 
-                                @if ($user->email_verified_at === null)
-                                    <div class="alert alert-warning">
-                                        <i class="bi bi-exclamation-triangle me-2"></i>
-                                        Your email address is unverified.
-                                        <button type="button" class="btn btn-outline-warning btn-sm ms-2" onclick="resendVerification()">
-                                            Resend Verification Email
-                                        </button>
-                                    </div>
-                                @endif
 
                                 <div class="d-flex justify-content-between">
                                     <button type="submit" class="btn btn-primary">
@@ -405,19 +396,10 @@
     </div>
 </div>
 
-<!-- Email Verification Form -->
-<form id="verification-form" method="POST" action="{{ route('verification.send') }}" style="display: none;">
-    @csrf
-</form>
 @endsection
 
 @push('scripts')
 <script>
-function resendVerification() {
-    if (confirm('Send a new verification email?')) {
-        document.getElementById('verification-form').submit();
-    }
-}
 
 // Handle tab navigation
 document.addEventListener('DOMContentLoaded', function() {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Customer;
+use App\Models\Sale;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -192,9 +193,15 @@ class ProfileController extends Controller
         ];
 
         if ($user->isCustomer()) {
-            $stats['total_purchases'] = $user->sales()->count();
-            $stats['total_spent'] = $user->sales()->sum('total_after_discount');
-            $stats['recent_purchases'] = $user->sales()->latest()->limit(5)->get();
+            // Get customer's online orders
+            $customerOrders = Sale::where('kd_pelanggan', $user->kd_pelanggan)
+                ->where('tipe_transaksi', 'online');
+                
+            $stats['total_purchases'] = $customerOrders->count();
+            $stats['total_spent'] = $customerOrders->sum('total_harga') ?: $customerOrders->sum('total_after_discount');
+            $stats['recent_purchases'] = $customerOrders->latest()->limit(5)->get();
+            $stats['pending_orders'] = $customerOrders->where('status_pesanan', 'pending')->count();
+            $stats['completed_orders'] = $customerOrders->where('status_pesanan', 'completed')->count();
         }
 
         if ($user->isPharmacist() || $user->isAdmin()) {
@@ -215,15 +222,23 @@ class ProfileController extends Controller
         $activities = [];
 
         if ($user->isCustomer()) {
-            // Recent purchases
-            $recentSales = $user->sales()->with('saleDetails.drug')->latest()->limit(10)->get();
+            // Recent purchases - get online orders by customer code
+            $recentSales = Sale::where('kd_pelanggan', $user->kd_pelanggan)
+                ->where('tipe_transaksi', 'online')
+                ->with(['details.drug'])
+                ->latest()
+                ->limit(10)
+                ->get();
+                
             foreach ($recentSales as $sale) {
                 $activities[] = [
                     'type' => 'purchase',
-                    'description' => "Purchased {$sale->saleDetails->count()} items",
-                    'amount' => $sale->total_after_discount,
+                    'description' => "Ordered {$sale->details->count()} items online",
+                    'amount' => $sale->total_harga ?? $sale->total_after_discount,
                     'date' => $sale->created_at,
-                    'details' => $sale
+                    'details' => $sale,
+                    'status' => $sale->status_pesanan ?? 'completed',
+                    'order_number' => $sale->no_faktur ?? $sale->nota
                 ];
             }
         }

@@ -41,11 +41,15 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span>Total Spent</span>
-                            <span class="fw-bold text-success">${{ number_format($stats['total_spent'] ?? 0, 2) }}</span>
+                            <span class="fw-bold text-success">Rp {{ number_format($stats['total_spent'] ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Pending Orders</span>
+                            <span class="badge bg-warning fs-6">{{ $stats['pending_orders'] ?? 0 }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span>Recent Activities</span>
-                            <span class="badge bg-info fs-6">{{ count($recentActivities) }}</span>
+                            <span>Completed Orders</span>
+                            <span class="badge bg-success fs-6">{{ $stats['completed_orders'] ?? 0 }}</span>
                         </div>
                     @elseif($user->isPharmacist() || $user->isAdmin())
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -76,8 +80,8 @@
                             <i class="bi bi-arrow-left me-2"></i>Back to Profile
                         </a>
                         @if($user->isCustomer())
-                            <a href="{{ route('sales.index') }}" class="btn btn-outline-success">
-                                <i class="bi bi-cart-check me-2"></i>My Purchases
+                            <a href="{{ route('customer.orders.index') }}" class="btn btn-outline-success">
+                                <i class="bi bi-cart-check me-2"></i>My Orders
                             </a>
                         @elseif($user->isPharmacist() || $user->isAdmin())
                             <a href="{{ route('sales.index') }}" class="btn btn-outline-success">
@@ -126,8 +130,14 @@
                                             </div>
                                             <div class="text-end">
                                                 <span class="fw-bold {{ $activity['type'] === 'purchase' ? 'text-primary' : 'text-success' }}">
-                                                    ${{ number_format($activity['amount'], 2) }}
+                                                    Rp {{ number_format($activity['amount'], 0, ',', '.') }}
                                                 </span>
+                                                @if(isset($activity['status']))
+                                                    <br>
+                                                    <span class="badge bg-label-{{ $activity['status'] == 'completed' ? 'success' : ($activity['status'] == 'pending' ? 'warning' : 'info') }}">
+                                                        {{ ucfirst($activity['status']) }}
+                                                    </span>
+                                                @endif
                                             </div>
                                         </div>
 
@@ -180,7 +190,7 @@
                             <p class="text-muted">
                                 Showing {{ count($recentActivities) }} recent activities.
                                 @if($user->isCustomer())
-                                    <a href="{{ route('sales.index') }}" class="ms-2">View all purchases →</a>
+                                    <a href="{{ route('customer.orders.index') }}" class="ms-2">View all orders →</a>
                                 @else
                                     <a href="{{ route('sales.index') }}" class="ms-2">View all sales →</a>
                                 @endif
