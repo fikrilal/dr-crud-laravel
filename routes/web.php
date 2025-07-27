@@ -37,9 +37,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('/users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
     
-    Route::get('/suppliers', function () {
-        return view('admin.suppliers.index');
-    })->name('suppliers.index');
+    // Supplier Management (reuse existing controller)
+    Route::resource('suppliers', SupplierController::class);
     
     Route::get('/reports', function () {
         return view('admin.reports.index');

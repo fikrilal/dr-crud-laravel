@@ -59,10 +59,11 @@
                                 <div class="mb-3">
                                     <label for="user_type" class="form-label">User Type *</label>
                                     <select class="form-select @error('user_type') is-invalid @enderror" 
-                                            id="user_type" name="user_type" required>
+                                            id="user_type" name="user_type" required onchange="toggleCustomerFields()">
                                         <option value="">Select User Type</option>
                                         <option value="admin" {{ old('user_type', $user->user_type) == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="pharmacist" {{ old('user_type', $user->user_type) == 'pharmacist' ? 'selected' : '' }}>Pharmacist</option>
+                                        <option value="customer" {{ old('user_type', $user->user_type) == 'customer' ? 'selected' : '' }}>Customer</option>
                                     </select>
                                     @error('user_type')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -119,6 +120,194 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Customer Specific Fields -->
+                        @if($user->isCustomer())
+                        <div id="customerFields" class="customer-fields">
+                            <hr class="my-4">
+                            <h6 class="mb-3">
+                                <i class="bi bi-person-badge me-2"></i>Customer Information
+                            </h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_name" class="form-label">Customer Name *</label>
+                                        <input type="text" class="form-control @error('customer_name') is-invalid @enderror" 
+                                               id="customer_name" name="customer_name" 
+                                               value="{{ old('customer_name', $user->customer->nm_pelanggan ?? '') }}" required>
+                                        @error('customer_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_phone" class="form-label">Phone Number *</label>
+                                        <input type="text" class="form-control @error('customer_phone') is-invalid @enderror" 
+                                               id="customer_phone" name="customer_phone" 
+                                               value="{{ old('customer_phone', $user->customer->telpon ?? '') }}" required>
+                                        @error('customer_phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="customer_address" class="form-label">Address *</label>
+                                <textarea class="form-control @error('customer_address') is-invalid @enderror" 
+                                          id="customer_address" name="customer_address" rows="3" required>{{ old('customer_address', $user->customer->alamat ?? '') }}</textarea>
+                                @error('customer_address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_city" class="form-label">City *</label>
+                                        <input type="text" class="form-control @error('customer_city') is-invalid @enderror" 
+                                               id="customer_city" name="customer_city" 
+                                               value="{{ old('customer_city', $user->customer->kota ?? '') }}" required>
+                                        @error('customer_city')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_email" class="form-label">Customer Email</label>
+                                        <input type="email" class="form-control @error('customer_email') is-invalid @enderror" 
+                                               id="customer_email" name="customer_email" 
+                                               value="{{ old('customer_email', $user->customer->email ?? '') }}">
+                                        @error('customer_email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Optional - can be different from login email</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="birth_date" class="form-label">Birth Date</label>
+                                        <input type="date" class="form-control @error('birth_date') is-invalid @enderror" 
+                                               id="birth_date" name="birth_date" 
+                                               value="{{ old('birth_date', $user->customer->tanggal_lahir?->format('Y-m-d') ?? '') }}">
+                                        @error('birth_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select @error('gender') is-invalid @enderror" 
+                                                id="gender" name="gender">
+                                            <option value="">Select Gender</option>
+                                            <option value="L" {{ old('gender', $user->customer->jenis_kelamin ?? '') == 'L' ? 'selected' : '' }}>Male</option>
+                                            <option value="P" {{ old('gender', $user->customer->jenis_kelamin ?? '') == 'P' ? 'selected' : '' }}>Female</option>
+                                        </select>
+                                        @error('gender')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @else
+                        <div id="customerFields" class="customer-fields" style="display: none;">
+                            <hr class="my-4">
+                            <h6 class="mb-3">
+                                <i class="bi bi-person-badge me-2"></i>Customer Information
+                            </h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_name" class="form-label">Customer Name *</label>
+                                        <input type="text" class="form-control @error('customer_name') is-invalid @enderror" 
+                                               id="customer_name" name="customer_name" value="{{ old('customer_name') }}">
+                                        @error('customer_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_phone" class="form-label">Phone Number *</label>
+                                        <input type="text" class="form-control @error('customer_phone') is-invalid @enderror" 
+                                               id="customer_phone" name="customer_phone" value="{{ old('customer_phone') }}">
+                                        @error('customer_phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="customer_address" class="form-label">Address *</label>
+                                <textarea class="form-control @error('customer_address') is-invalid @enderror" 
+                                          id="customer_address" name="customer_address" rows="3">{{ old('customer_address') }}</textarea>
+                                @error('customer_address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_city" class="form-label">City *</label>
+                                        <input type="text" class="form-control @error('customer_city') is-invalid @enderror" 
+                                               id="customer_city" name="customer_city" value="{{ old('customer_city') }}">
+                                        @error('customer_city')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_email" class="form-label">Customer Email</label>
+                                        <input type="email" class="form-control @error('customer_email') is-invalid @enderror" 
+                                               id="customer_email" name="customer_email" value="{{ old('customer_email') }}">
+                                        @error('customer_email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Optional - can be different from login email</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="birth_date" class="form-label">Birth Date</label>
+                                        <input type="date" class="form-control @error('birth_date') is-invalid @enderror" 
+                                               id="birth_date" name="birth_date" value="{{ old('birth_date') }}">
+                                        @error('birth_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select @error('gender') is-invalid @enderror" 
+                                                id="gender" name="gender">
+                                            <option value="">Select Gender</option>
+                                            <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Male</option>
+                                            <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Female</option>
+                                        </select>
+                                        @error('gender')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
 
                         <hr class="my-4">
 
@@ -190,13 +379,26 @@
                             <h6 class="text-danger">Delete User Account</h6>
                             <p class="text-muted mb-0">
                                 Permanently delete this user account. This action cannot be undone.
-                                @if($user->sales()->count() > 0 || $user->purchases()->count() > 0)
+                                @php
+                                    $hasTransactions = $user->sales()->count() > 0 || $user->purchases()->count() > 0;
+                                    $hasCustomerOrders = false;
+                                    if ($user->isCustomer() && $user->kd_pelanggan) {
+                                        $hasCustomerOrders = \App\Models\Sale::where('kd_pelanggan', $user->kd_pelanggan)
+                                            ->where('tipe_transaksi', 'online')
+                                            ->count() > 0;
+                                    }
+                                    $canDelete = !$hasTransactions && !$hasCustomerOrders;
+                                @endphp
+                                @if($hasTransactions)
                                     <br><strong class="text-warning">Note: This user has transaction history and cannot be deleted.</strong>
+                                @endif
+                                @if($hasCustomerOrders)
+                                    <br><strong class="text-warning">Note: This customer has order history and cannot be deleted.</strong>
                                 @endif
                             </p>
                         </div>
                         <div class="col-md-4 text-end">
-                            @if($user->sales()->count() == 0 && $user->purchases()->count() == 0)
+                            @if($canDelete)
                                 <button type="button" class="btn btn-danger" 
                                         onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}')">
                                     <i class="bi bi-trash me-2"></i>Delete User
@@ -246,6 +448,37 @@
 
 @push('scripts')
 <script>
+function toggleCustomerFields() {
+    const userType = document.getElementById('user_type').value;
+    const customerFields = document.getElementById('customerFields');
+    
+    if (userType === 'customer') {
+        customerFields.style.display = 'block';
+        // Make customer fields required
+        const nameField = document.getElementById('customer_name');
+        const phoneField = document.getElementById('customer_phone');
+        const addressField = document.getElementById('customer_address');
+        const cityField = document.getElementById('customer_city');
+        
+        if (nameField) nameField.required = true;
+        if (phoneField) phoneField.required = true;
+        if (addressField) addressField.required = true;
+        if (cityField) cityField.required = true;
+    } else {
+        customerFields.style.display = 'none';
+        // Remove required from customer fields
+        const nameField = document.getElementById('customer_name');
+        const phoneField = document.getElementById('customer_phone');
+        const addressField = document.getElementById('customer_address');
+        const cityField = document.getElementById('customer_city');
+        
+        if (nameField) nameField.required = false;
+        if (phoneField) phoneField.required = false;
+        if (addressField) addressField.required = false;
+        if (cityField) cityField.required = false;
+    }
+}
+
 function confirmDelete(userId, userName) {
     document.getElementById('deleteUserName').textContent = userName;
     document.getElementById('deleteForm').action = `/admin/users/${userId}`;
@@ -253,6 +486,9 @@ function confirmDelete(userId, userName) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Check initial state on page load
+    toggleCustomerFields();
+    
     // Password confirmation validation
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('password_confirmation');

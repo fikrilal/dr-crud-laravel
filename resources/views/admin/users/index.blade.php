@@ -183,7 +183,7 @@
                                             <span class="badge bg-label-{{ $user->is_active ? 'success' : 'secondary' }} me-2">
                                                 {{ $user->is_active ? 'Active' : 'Inactive' }}
                                             </span>
-                                            @if($user->user_type !== 'customer' && $user->id !== auth()->id())
+                                            @if($user->id !== auth()->id())
                                                 <button type="button" class="btn btn-sm btn-outline-secondary" 
                                                         onclick="toggleUserStatus({{ $user->id }}, {{ $user->is_active ? 'false' : 'true' }})">
                                                     <i class="bi bi-toggle-{{ $user->is_active ? 'on' : 'off' }}"></i>
@@ -211,26 +211,18 @@
                                                         <i class="bi bi-eye me-2"></i>View Details
                                                     </a>
                                                 </li>
-                                                @if($user->user_type !== 'customer')
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('admin.users.edit', $user) }}">
+                                                        <i class="bi bi-pencil me-2"></i>Edit User
+                                                    </a>
+                                                </li>
+                                                @if($user->id !== auth()->id())
+                                                    <li><hr class="dropdown-divider"></li>
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('admin.users.edit', $user) }}">
-                                                            <i class="bi bi-pencil me-2"></i>Edit User
-                                                        </a>
-                                                    </li>
-                                                    @if($user->id !== auth()->id())
-                                                        <li><hr class="dropdown-divider"></li>
-                                                        <li>
-                                                            <button type="button" class="dropdown-item text-danger" 
-                                                                    onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}')">
-                                                                <i class="bi bi-trash me-2"></i>Delete User
-                                                            </button>
-                                                        </li>
-                                                    @endif
-                                                @else
-                                                    <li>
-                                                        <span class="dropdown-item-text text-muted">
-                                                            <i class="bi bi-info-circle me-2"></i>Customer account (read-only)
-                                                        </span>
+                                                        <button type="button" class="dropdown-item text-danger" 
+                                                                onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}')">
+                                                            <i class="bi bi-trash me-2"></i>Delete User
+                                                        </button>
                                                     </li>
                                                 @endif
                                             </ul>

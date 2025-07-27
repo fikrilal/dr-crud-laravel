@@ -77,20 +77,53 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'user_type' => ['required', 'in:admin,pharmacist'],
+            'user_type' => ['required', 'in:admin,pharmacist,customer'],
             'is_active' => ['boolean'],
+            // Customer specific fields
+            'customer_name' => ['required_if:user_type,customer', 'string', 'max:255'],
+            'customer_phone' => ['required_if:user_type,customer', 'string', 'max:20'],
+            'customer_address' => ['required_if:user_type,customer', 'string', 'max:500'],
+            'customer_city' => ['required_if:user_type,customer', 'string', 'max:100'],
+            'customer_email' => ['nullable', 'email', 'max:255'],
+            'birth_date' => ['nullable', 'date'],
+            'gender' => ['nullable', 'in:L,P'],
         ]);
         
         try {
             DB::beginTransaction();
             
-            $user = User::create([
+            $userData = [
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'user_type' => $request->user_type,
                 'is_active' => $request->boolean('is_active', true),
-            ]);
+            ];
+            
+            // If creating a customer, generate customer code and set it
+            if ($request->user_type === 'customer') {
+                $lastCustomer = Customer::orderBy('kd_pelanggan', 'desc')->first();
+                $nextNumber = $lastCustomer 
+                    ? (int)substr($lastCustomer->kd_pelanggan, 2) + 1 
+                    : 1;
+                $customerCode = 'CS' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+                
+                $userData['kd_pelanggan'] = $customerCode;
+                
+                // Create the customer record
+                $customer = Customer::create([
+                    'kd_pelanggan' => $customerCode,
+                    'nm_pelanggan' => $request->customer_name,
+                    'telpon' => $request->customer_phone,
+                    'alamat' => $request->customer_address,
+                    'kota' => $request->customer_city,
+                    'email' => $request->customer_email,
+                    'tanggal_lahir' => $request->birth_date,
+                    'jenis_kelamin' => $request->gender,
+                ]);
+            }
+            
+            $user = User::create($userData);
             
             DB::commit();
             
@@ -110,32 +143,33 @@ class UserController extends Controller
     
     public function edit(User $user)
     {
-        // Only allow editing admin and pharmacist accounts
-        if ($user->user_type === 'customer') {
-            return redirect()
-                ->route('admin.users.show', $user)
-                ->with('error', 'Customer accounts cannot be edited from this interface.');
-        }
-        
         return view('admin.users.edit', compact('user'));
     }
     
     public function update(Request $request, User $user)
     {
-        // Only allow updating admin and pharmacist accounts
-        if ($user->user_type === 'customer') {
-            return redirect()
-                ->route('admin.users.show', $user)
-                ->with('error', 'Customer accounts cannot be modified.');
-        }
-        
-        $request->validate([
+        $validationRules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'user_type' => ['required', 'in:admin,pharmacist'],
+            'user_type' => ['required', 'in:admin,pharmacist,customer'],
             'is_active' => ['boolean'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-        ]);
+        ];
+        
+        // Add customer-specific validation if user is a customer
+        if ($user->user_type === 'customer') {
+            $validationRules = array_merge($validationRules, [
+                'customer_name' => ['required', 'string', 'max:255'],
+                'customer_phone' => ['required', 'string', 'max:20'],
+                'customer_address' => ['required', 'string', 'max:500'],
+                'customer_city' => ['required', 'string', 'max:100'],
+                'customer_email' => ['nullable', 'email', 'max:255'],
+                'birth_date' => ['nullable', 'date'],
+                'gender' => ['nullable', 'in:L,P'],
+            ]);
+        }
+        
+        $request->validate($validationRules);
         
         try {
             DB::beginTransaction();
@@ -153,6 +187,19 @@ class UserController extends Controller
             }
             
             $user->update($userData);
+            
+            // Update customer data if user is a customer
+            if ($user->user_type === 'customer' && $user->customer) {
+                $user->customer->update([
+                    'nm_pelanggan' => $request->customer_name,
+                    'telpon' => $request->customer_phone,
+                    'alamat' => $request->customer_address,
+                    'kota' => $request->customer_city,
+                    'email' => $request->customer_email,
+                    'tanggal_lahir' => $request->birth_date,
+                    'jenis_kelamin' => $request->gender,
+                ]);
+            }
             
             DB::commit();
             
@@ -172,13 +219,6 @@ class UserController extends Controller
     
     public function destroy(User $user)
     {
-        // Only allow deleting admin and pharmacist accounts
-        if ($user->user_type === 'customer') {
-            return redirect()
-                ->route('admin.users.index')
-                ->with('error', 'Customer accounts cannot be deleted from this interface.');
-        }
-        
         // Prevent deleting own account
         if ($user->id === auth()->id()) {
             return redirect()
@@ -193,8 +233,26 @@ class UserController extends Controller
                 ->with('error', 'Cannot delete user with existing transaction history.');
         }
         
+        // For customers, check if they have online orders
+        if ($user->isCustomer() && $user->kd_pelanggan) {
+            $customerOrders = \App\Models\Sale::where('kd_pelanggan', $user->kd_pelanggan)
+                ->where('tipe_transaksi', 'online')
+                ->count();
+            
+            if ($customerOrders > 0) {
+                return redirect()
+                    ->route('admin.users.index')
+                    ->with('error', 'Cannot delete customer with existing order history.');
+            }
+        }
+        
         try {
             DB::beginTransaction();
+            
+            // If customer, delete customer record first
+            if ($user->isCustomer() && $user->customer) {
+                $user->customer->delete();
+            }
             
             $user->delete();
             
@@ -215,11 +273,6 @@ class UserController extends Controller
     
     public function toggleStatus(User $user)
     {
-        // Only allow status changes for admin and pharmacist accounts
-        if ($user->user_type === 'customer') {
-            return response()->json(['error' => 'Customer account status cannot be changed'], 403);
-        }
-        
         // Prevent deactivating own account
         if ($user->id === auth()->id()) {
             return response()->json(['error' => 'You cannot deactivate your own account'], 403);

@@ -54,16 +54,17 @@
                                 <div class="mb-3">
                                     <label for="user_type" class="form-label">User Type *</label>
                                     <select class="form-select @error('user_type') is-invalid @enderror" 
-                                            id="user_type" name="user_type" required>
+                                            id="user_type" name="user_type" required onchange="toggleCustomerFields()">
                                         <option value="">Select User Type</option>
                                         <option value="admin" {{ old('user_type') == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="pharmacist" {{ old('user_type') == 'pharmacist' ? 'selected' : '' }}>Pharmacist</option>
+                                        <option value="customer" {{ old('user_type') == 'customer' ? 'selected' : '' }}>Customer</option>
                                     </select>
                                     @error('user_type')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <small class="form-text text-muted">
-                                        Admin: Full system access | Pharmacist: Sales and inventory management
+                                        Admin: Full system access | Pharmacist: Sales and inventory | Customer: Online ordering
                                     </small>
                                 </div>
                             </div>
@@ -99,6 +100,97 @@
                                     <label for="password_confirmation" class="form-label">Confirm Password *</label>
                                     <input type="password" class="form-control" 
                                            id="password_confirmation" name="password_confirmation" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Specific Fields -->
+                        <div id="customerFields" class="customer-fields" style="display: none;">
+                            <hr class="my-4">
+                            <h6 class="mb-3">
+                                <i class="bi bi-person-badge me-2"></i>Customer Information
+                            </h6>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_name" class="form-label">Customer Name *</label>
+                                        <input type="text" class="form-control @error('customer_name') is-invalid @enderror" 
+                                               id="customer_name" name="customer_name" value="{{ old('customer_name') }}">
+                                        @error('customer_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_phone" class="form-label">Phone Number *</label>
+                                        <input type="text" class="form-control @error('customer_phone') is-invalid @enderror" 
+                                               id="customer_phone" name="customer_phone" value="{{ old('customer_phone') }}">
+                                        @error('customer_phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="customer_address" class="form-label">Address *</label>
+                                <textarea class="form-control @error('customer_address') is-invalid @enderror" 
+                                          id="customer_address" name="customer_address" rows="3">{{ old('customer_address') }}</textarea>
+                                @error('customer_address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_city" class="form-label">City *</label>
+                                        <input type="text" class="form-control @error('customer_city') is-invalid @enderror" 
+                                               id="customer_city" name="customer_city" value="{{ old('customer_city') }}">
+                                        @error('customer_city')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="customer_email" class="form-label">Customer Email</label>
+                                        <input type="email" class="form-control @error('customer_email') is-invalid @enderror" 
+                                               id="customer_email" name="customer_email" value="{{ old('customer_email') }}">
+                                        @error('customer_email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="form-text text-muted">Optional - can be different from login email</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="birth_date" class="form-label">Birth Date</label>
+                                        <input type="date" class="form-control @error('birth_date') is-invalid @enderror" 
+                                               id="birth_date" name="birth_date" value="{{ old('birth_date') }}">
+                                        @error('birth_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select @error('gender') is-invalid @enderror" 
+                                                id="gender" name="gender">
+                                            <option value="">Select Gender</option>
+                                            <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Male</option>
+                                            <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Female</option>
+                                        </select>
+                                        @error('gender')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -152,6 +244,24 @@
                     </div>
                 </div>
             </div>
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="card border-info">
+                        <div class="card-body">
+                            <h6 class="card-title text-info">
+                                <i class="bi bi-person-check me-2"></i>Customer Privileges
+                            </h6>
+                            <ul class="list-unstyled mb-0 small">
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Browse drug catalog online</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Place online orders</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>View order history</li>
+                                <li><i class="bi bi-check-circle text-success me-2"></i>Manage personal profile</li>
+                                <li><i class="bi bi-x-circle text-danger me-2"></i>Cannot access admin or sales features</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -159,7 +269,31 @@
 
 @push('scripts')
 <script>
+function toggleCustomerFields() {
+    const userType = document.getElementById('user_type').value;
+    const customerFields = document.getElementById('customerFields');
+    
+    if (userType === 'customer') {
+        customerFields.style.display = 'block';
+        // Make customer fields required
+        document.getElementById('customer_name').required = true;
+        document.getElementById('customer_phone').required = true;
+        document.getElementById('customer_address').required = true;
+        document.getElementById('customer_city').required = true;
+    } else {
+        customerFields.style.display = 'none';
+        // Remove required from customer fields
+        document.getElementById('customer_name').required = false;
+        document.getElementById('customer_phone').required = false;
+        document.getElementById('customer_address').required = false;
+        document.getElementById('customer_city').required = false;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Check initial state on page load
+    toggleCustomerFields();
+    
     // Password strength indicator
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('password_confirmation');
