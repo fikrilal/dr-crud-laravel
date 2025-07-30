@@ -53,11 +53,6 @@
                 @endif
             </a>
             
-            <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">
-                <i class="bi bi-truck me-2"></i>
-                Supplier Management
-            </a>
-            
             <a class="nav-link {{ request()->routeIs('sales.*') ? 'active' : '' }}" href="{{ route('sales.index') }}">
                 <i class="bi bi-cart-check me-2"></i>
                 Sales Processing

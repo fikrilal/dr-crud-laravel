@@ -4,8 +4,8 @@
 
 @section('header')
     @section('breadcrumb')
-        <li class="breadcrumb-item"><a href="{{ route('suppliers.index') }}">Supplier Management</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('suppliers.show', $supplier) }}">{{ $supplier->nama_supplier }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.suppliers.index') }}">Supplier Management</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.suppliers.show', $supplier) }}">{{ $supplier->nama_supplier }}</a></li>
         <li class="breadcrumb-item active">Edit</li>
     @endsection
 @endsection
@@ -20,7 +20,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('suppliers.update', $supplier) }}" class="needs-validation" novalidate>
+                <form method="POST" action="{{ route('admin.suppliers.update', $supplier) }}" class="needs-validation" novalidate>
                     @csrf
                     @method('PUT')
                     
@@ -147,11 +147,11 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('suppliers.show', $supplier) }}" class="btn btn-outline-secondary">
+                                <a href="{{ route('admin.suppliers.show', $supplier) }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left me-2"></i>Back to Details
                                 </a>
                                 <div>
-                                    <a href="{{ route('suppliers.index') }}" class="btn btn-outline-info me-2">
+                                    <a href="{{ route('admin.suppliers.index') }}" class="btn btn-outline-info me-2">
                                         <i class="bi bi-list me-2"></i>All Suppliers
                                     </a>
                                     <button type="submit" class="btn btn-primary">

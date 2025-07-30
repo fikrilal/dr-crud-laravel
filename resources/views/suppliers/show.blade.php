@@ -4,7 +4,7 @@
 
 @section('header')
     @section('breadcrumb')
-        <li class="breadcrumb-item"><a href="{{ route('suppliers.index') }}">Supplier Management</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.suppliers.index') }}">Supplier Management</a></li>
         <li class="breadcrumb-item active">{{ $supplier->nama_supplier }}</li>
     @endsection
 @endsection
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div class="col-md-4 text-md-end">
-                        <a href="{{ route('suppliers.edit', $supplier) }}" class="btn btn-light me-2">
+                        <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-light me-2">
                             <i class="bi bi-pencil me-2"></i>Edit
                         </a>
                         <button class="btn btn-outline-light" onclick="confirmDelete('{{ $supplier->kd_supplier }}', '{{ $supplier->nama_supplier }}')">
@@ -243,7 +243,7 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-3">
-                    <a href="{{ route('suppliers.edit', $supplier) }}" class="btn btn-outline-primary">
+                    <a href="{{ route('admin.suppliers.edit', $supplier) }}" class="btn btn-outline-primary">
                         <i class="bi bi-pencil me-2"></i>Edit Supplier
                     </a>
                     
@@ -386,7 +386,7 @@
 <script>
 function confirmDelete(supplierId, supplierName) {
     document.getElementById('supplierName').textContent = supplierName;
-    document.getElementById('deleteForm').action = `/suppliers/${supplierId}`;
+    document.getElementById('deleteForm').action = `/admin/suppliers/${supplierId}`;
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 </script>

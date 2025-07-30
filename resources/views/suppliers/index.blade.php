@@ -21,7 +21,7 @@
                         <p class="card-text mb-0">Manage your pharmacy suppliers and their information.</p>
                     </div>
                     <div class="col-md-4 text-md-end">
-                        <a href="{{ route('suppliers.create') }}" class="btn btn-light">
+                        <a href="{{ route('admin.suppliers.create') }}" class="btn btn-light">
                             <i class="bi bi-plus-lg me-2"></i>Add New Supplier
                         </a>
                     </div>
@@ -84,7 +84,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form method="GET" action="{{ route('suppliers.index') }}" class="row g-3">
+                <form method="GET" action="{{ route('admin.suppliers.index') }}" class="row g-3">
                     <div class="col-md-4">
                         <label for="search" class="form-label">Search Suppliers</label>
                         <div class="input-group">
@@ -130,7 +130,7 @@
                     <i class="bi bi-list-ul me-2"></i>Suppliers List
                 </h5>
                 @if(request()->hasAny(['search', 'status', 'city']))
-                    <a href="{{ route('suppliers.index') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ route('admin.suppliers.index') }}" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-x-circle me-1"></i>Clear Filters
                     </a>
                 @endif
@@ -205,12 +205,12 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('suppliers.show', $supplier) }}">
+                                                        <a class="dropdown-item" href="{{ route('admin.suppliers.show', $supplier) }}">
                                                             <i class="bi bi-eye me-2"></i>View Details
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item" href="{{ route('suppliers.edit', $supplier) }}">
+                                                        <a class="dropdown-item" href="{{ route('admin.suppliers.edit', $supplier) }}">
                                                             <i class="bi bi-pencil me-2"></i>Edit
                                                         </a>
                                                     </li>
@@ -242,13 +242,13 @@
                         <h4 class="text-muted mb-3">No Suppliers Found</h4>
                         @if(request()->hasAny(['search', 'status', 'city']))
                             <p class="text-muted mb-4">No suppliers match your current filters.</p>
-                            <a href="{{ route('suppliers.index') }}" class="btn btn-outline-primary me-3">
+                            <a href="{{ route('admin.suppliers.index') }}" class="btn btn-outline-primary me-3">
                                 <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
                             </a>
                         @else
                             <p class="text-muted mb-4">Start by adding your first supplier to the system.</p>
                         @endif
-                        <a href="{{ route('suppliers.create') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.suppliers.create') }}" class="btn btn-primary">
                             <i class="bi bi-plus-lg me-2"></i>Add First Supplier
                         </a>
                     </div>
@@ -291,7 +291,7 @@
 <script>
 function confirmDelete(supplierId, supplierName) {
     document.getElementById('supplierName').textContent = supplierName;
-    document.getElementById('deleteForm').action = `/suppliers/${supplierId}`;
+    document.getElementById('deleteForm').action = `/admin/suppliers/${supplierId}`;
     new bootstrap.Modal(document.getElementById('deleteModal')).show();
 }
 

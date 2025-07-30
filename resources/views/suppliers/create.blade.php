@@ -4,7 +4,7 @@
 
 @section('header')
     @section('breadcrumb')
-        <li class="breadcrumb-item"><a href="{{ route('suppliers.index') }}">Supplier Management</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.suppliers.index') }}">Supplier Management</a></li>
         <li class="breadcrumb-item active">Add New Supplier</li>
     @endsection
 @endsection
@@ -19,7 +19,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form method="POST" action="{{ route('suppliers.store') }}" class="needs-validation" novalidate>
+                <form method="POST" action="{{ route('admin.suppliers.store') }}" class="needs-validation" novalidate>
                     @csrf
                     
                     <!-- Basic Information -->
@@ -131,7 +131,7 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('suppliers.index') }}" class="btn btn-outline-secondary">
+                                <a href="{{ route('admin.suppliers.index') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left me-2"></i>Back to Suppliers
                                 </a>
                                 <div>

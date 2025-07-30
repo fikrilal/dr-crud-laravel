@@ -2,39 +2,428 @@
 
 @section('title', 'New Sale Transaction')
 
-@section('header')
-    @section('breadcrumb')
-        <li class="breadcrumb-item"><a href="{{ route('sales.index') }}">Sales History</a></li>
-        <li class="breadcrumb-item active">New Sale</li>
-    @endsection
-@endsection
+@push('styles')
+<style>
+/* Modern Sales Processing Page Styles */
+.modern-sales-header {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: #e2e8f0;
+}
+
+.modern-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+.modern-card-header {
+    background: #0f172a;
+    border-bottom: 1px solid #334155;
+    padding: 1.5rem;
+    color: #f8fafc;
+    border-radius: 16px 16px 0 0;
+}
+
+.modern-card-body {
+    padding: 2rem;
+    color: #e2e8f0;
+}
+
+.modern-form-control {
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.modern-form-control:focus {
+    background: #334155 !important;
+    border-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    outline: none !important;
+}
+
+.modern-form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+.modern-form-label {
+    color: #f8fafc;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.modern-form-select {
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    border-radius: 8px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+    padding-right: 2.25rem !important;
+}
+
+.modern-form-select:focus {
+    background: #334155 !important;
+    border-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+.modern-form-select option {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+.input-group-text {
+    background: #475569 !important;
+    border: 1px solid #475569 !important;
+    color: #94a3b8 !important;
+    border-radius: 8px 0 0 8px;
+}
+
+.modern-search-results {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin-top: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.modern-search-item {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid #334155 !important;
+    color: #e2e8f0 !important;
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.modern-search-item:hover {
+    background: #334155 !important;
+    color: #f8fafc !important;
+}
+
+.modern-search-item:last-child {
+    border-bottom: none !important;
+}
+
+.modern-table {
+    background: #1e293b;
+    color: #e2e8f0;
+    margin: 0;
+}
+
+.modern-table thead th {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-bottom: 1px solid #334155 !important;
+    border-top: none !important;
+    padding: 1rem !important;
+    font-weight: 600;
+}
+
+.modern-table tbody tr {
+    background: #1e293b !important;
+    border-bottom: 1px solid #334155 !important;
+}
+
+.modern-table tbody tr:hover {
+    background: #334155 !important;
+}
+
+.modern-table tbody td {
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+    padding: 1rem !important;
+}
+
+.modern-empty-cart {
+    color: #94a3b8;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.modern-empty-icon {
+    font-size: 3rem;
+    color: #475569;
+    margin-bottom: 1rem;
+}
+
+.modern-cart-summary {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: #e2e8f0;
+}
+
+.modern-btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.modern-btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    color: white;
+}
+
+.modern-btn-primary:disabled {
+    background: #475569;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.modern-btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.modern-btn-success:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-success:disabled {
+    background: #475569;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.modern-btn-outline {
+    background: transparent;
+    border: 1px solid #475569;
+    color: #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modern-btn-outline:hover {
+    background: #334155;
+    border-color: #3b82f6;
+    color: #e2e8f0;
+    text-decoration: none;
+}
+
+.modern-btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.modern-btn-danger {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border: none;
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.modern-btn-danger:hover {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    color: white;
+}
+
+.modern-input-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.modern-input-group .form-control {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+}
+
+.modern-badge {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.modern-badge.bg-light {
+    background: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.modern-badge.bg-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+}
+
+.modern-modal-content {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    border-radius: 16px;
+    color: #e2e8f0;
+}
+
+.modern-modal-header {
+    background: #0f172a;
+    border-bottom: 1px solid #334155 !important;
+    border-radius: 16px 16px 0 0;
+    color: #f8fafc;
+}
+
+.modern-modal-body {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+.modern-modal-footer {
+    background: #0f172a;
+    border-top: 1px solid #334155 !important;
+    border-radius: 0 0 16px 16px;
+}
+
+.btn-close {
+    filter: invert(1);
+    opacity: 0.6;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.modern-quantity-controls {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 120px;
+}
+
+.modern-quantity-btn {
+    background: #475569;
+    border: 1px solid #475569;
+    color: #e2e8f0;
+    padding: 0.25rem 0.5rem;
+    min-width: 30px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modern-quantity-btn:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.modern-quantity-input {
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    text-align: center;
+    min-width: 60px;
+    padding: 0.25rem 0.1rem;
+    border-left: none !important;
+    border-right: none !important;
+}
+
+.modern-quantity-input:focus {
+    background: #334155 !important;
+    border-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+    box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+    .modern-card-body {
+        padding: 1rem;
+    }
+    
+    .modern-sales-header {
+        padding: 1rem;
+    }
+}
+</style>
+@endpush
 
 @section('content')
-<div class="container-fluid">
+<div class="p-4">
+    <!-- Modern Sales Header -->
+    <div class="modern-sales-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="modern-card-icon me-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+                <div>
+                    <h2 class="mb-0 fw-bold" style="color: #f8fafc;">New Sale Transaction</h2>
+                    <p class="mb-0" style="color: #94a3b8;">Process customer sales and manage inventory</p>
+                </div>
+            </div>
+            <a href="{{ route('sales.index') }}" class="modern-btn-outline">
+                <i class="bi bi-arrow-left me-2"></i>Back to Sales
+            </a>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-8">
-            <!-- Drug Search & Cart -->
-            <div class="card mb-4">
-                <div class="card-header">
+            <!-- Modern Drug Search & Cart -->
+            <div class="modern-card">
+                <div class="modern-card-header">
                     <h5 class="mb-0">
                         <i class="bi bi-search me-2"></i>Drug Search & Cart
                     </h5>
                 </div>
-                <div class="card-body">
-                    <!-- Drug Search -->
+                <div class="modern-card-body">
+                    <!-- Modern Drug Search -->
                     <div class="mb-4">
-                        <label for="drugSearch" class="form-label">Search Drugs</label>
-                        <div class="input-group">
+                        <label for="drugSearch" class="modern-form-label">Search Drugs</label>
+                        <div class="modern-input-group">
                             <span class="input-group-text"><i class="bi bi-capsule"></i></span>
-                            <input type="text" class="form-control" id="drugSearch" placeholder="Type drug name to search...">
+                            <input type="text" class="modern-form-control" id="drugSearch" placeholder="Type drug name to search...">
                         </div>
                         <div id="drugSearchResults" class="mt-2"></div>
                     </div>
 
-                    <!-- Shopping Cart -->
+                    <!-- Modern Shopping Cart -->
                     <div class="table-responsive">
-                        <table class="table table-hover" id="cartTable">
-                            <thead class="table-light">
+                        <table class="modern-table table" id="cartTable">
+                            <thead>
                                 <tr>
                                     <th>Drug Name</th>
                                     <th width="10%">Stock</th>
@@ -46,28 +435,28 @@
                             </thead>
                             <tbody id="cartItems">
                                 <tr id="emptyCart">
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        <i class="bi bi-cart display-1 mb-3"></i>
-                                        <br>Cart is empty. Search and add drugs above.
+                                    <td colspan="6" class="modern-empty-cart">
+                                        <div class="modern-empty-icon">
+                                            <i class="bi bi-cart"></i>
+                                        </div>
+                                        <div>Cart is empty. Search and add drugs above.</div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <!-- Cart Summary -->
+                    <!-- Modern Cart Summary -->
                     <div class="row mt-3">
                         <div class="col-md-6 offset-md-6">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <span>Total Items:</span>
-                                        <span id="totalItems">0</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Total Amount:</span>
-                                        <strong id="totalAmount">$0.00</strong>
-                                    </div>
+                            <div class="modern-cart-summary">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Total Items:</span>
+                                    <span id="totalItems">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Total Amount:</span>
+                                    <strong id="totalAmount" style="color: #10b981; font-size: 1.1rem;">$0.00</strong>
                                 </div>
                             </div>
                         </div>
@@ -77,19 +466,19 @@
         </div>
 
         <div class="col-lg-4">
-            <!-- Customer & Payment -->
-                            <form id="saleForm" method="POST" action="{{ route('sales.store') }}">
+            <!-- Modern Customer & Payment -->
+            <form id="saleForm" method="POST" action="{{ route('sales.store') }}">
                 @csrf
-                <div class="card mb-4">
-                    <div class="card-header">
+                <div class="modern-card">
+                    <div class="modern-card-header">
                         <h5 class="mb-0">
                             <i class="bi bi-person me-2"></i>Customer Information
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="modern-card-body">
                         <div class="mb-3">
-                            <label for="customer_id" class="form-label">Customer</label>
-                            <select class="form-select" id="customer_id" name="customer_id">
+                            <label for="customer_id" class="modern-form-label">Customer</label>
+                            <select class="modern-form-select" id="customer_id" name="customer_id">
                                 <option value="">Walk-in Customer</option>
                                 @foreach($customers as $customer)
                                     <option value="{{ $customer->id }}">
@@ -99,21 +488,21 @@
                             </select>
                         </div>
                         
-                        <button type="button" class="btn btn-outline-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#newCustomerModal">
+                        <button type="button" class="modern-btn-primary modern-btn-sm w-100" data-bs-toggle="modal" data-bs-target="#newCustomerModal">
                             <i class="bi bi-plus me-2"></i>Add New Customer
                         </button>
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header">
+                <div class="modern-card">
+                    <div class="modern-card-header">
                         <h5 class="mb-0">
                             <i class="bi bi-credit-card me-2"></i>Payment Method
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="modern-card-body">
                         <div class="mb-3">
-                            <select class="form-select" id="metode_pembayaran" name="metode_pembayaran" required>
+                            <select class="modern-form-select" id="metode_pembayaran" name="metode_pembayaran" required>
                                 <option value="">Select Payment Method</option>
                                 <option value="cash">Cash</option>
                                 <option value="credit_card">Credit Card</option>
@@ -125,12 +514,12 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
+                <!-- Modern Action Buttons -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-success btn-lg" id="processSaleBtn" disabled>
+                    <button type="submit" class="modern-btn-success" id="processSaleBtn" disabled style="padding: 1rem;">
                         <i class="bi bi-check-circle me-2"></i>Process Sale
                     </button>
-                    <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('sales.index') }}" class="modern-btn-outline" style="text-align: center;">
                         <i class="bi bi-x-circle me-2"></i>Cancel
                     </a>
                 </div>
@@ -139,32 +528,32 @@
     </div>
 </div>
 
-<!-- New Customer Modal -->
+<!-- Modern New Customer Modal -->
 <div class="modal fade" id="newCustomerModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content modern-modal-content">
+            <div class="modal-header modern-modal-header">
                 <h5 class="modal-title">Add New Customer</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="newCustomerForm">
-                <div class="modal-body">
+                <div class="modal-body modern-modal-body">
                     <div class="mb-3">
-                        <label for="nama_pelanggan" class="form-label">Customer Name *</label>
-                        <input type="text" class="form-control" id="nama_pelanggan" name="nama_pelanggan" required>
+                        <label for="nama_pelanggan" class="modern-form-label">Customer Name *</label>
+                        <input type="text" class="modern-form-control" id="nama_pelanggan" name="nama_pelanggan" required>
                     </div>
                     <div class="mb-3">
-                        <label for="nomor_telepon" class="form-label">Phone Number *</label>
-                        <input type="text" class="form-control" id="nomor_telepon" name="nomor_telepon" required>
+                        <label for="nomor_telepon" class="modern-form-label">Phone Number *</label>
+                        <input type="text" class="modern-form-control" id="nomor_telepon" name="nomor_telepon" required>
                     </div>
                     <div class="mb-3">
-                        <label for="alamat" class="form-label">Address</label>
-                        <textarea class="form-control" id="alamat" name="alamat" rows="2"></textarea>
+                        <label for="alamat" class="modern-form-label">Address</label>
+                        <textarea class="modern-form-control" id="alamat" name="alamat" rows="2"></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                <div class="modal-footer modern-modal-footer">
+                    <button type="button" class="modern-btn-outline" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="modern-btn-primary">Add Customer</button>
                 </div>
             </form>
         </div>
@@ -205,7 +594,7 @@ function initializeDrugSearch() {
                 })
                 .catch(error => {
                     console.error('Search error:', error);
-                    resultsDiv.innerHTML = '<div class="alert alert-danger">Search failed. Please try again.</div>';
+                    resultsDiv.innerHTML = '<div style="padding: 1rem; color: #f87171; text-align: center; background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; border-radius: 8px;">Search failed. Please try again.</div>';
                 });
         }, 300);
     });
@@ -215,21 +604,21 @@ function displaySearchResults(drugs) {
     const resultsDiv = document.getElementById('drugSearchResults');
     
     if (drugs.length === 0) {
-        resultsDiv.innerHTML = '<div class="alert alert-info">No drugs found matching your search.</div>';
+        resultsDiv.innerHTML = '<div style="padding: 1rem; color: #94a3b8; text-align: center; background: #1e293b; border: 1px solid #334155; border-radius: 8px;">No drugs found matching your search.</div>';
         return;
     }
 
-    let html = '<div class="list-group">';
+    let html = '<div class="modern-search-results">';
     drugs.forEach(drug => {
         html += `
-            <div class="list-group-item list-group-item-action" style="cursor: pointer;" onclick="addToCart('${drug.id}', '${drug.nama_obat}', ${drug.harga_jual}, ${drug.stok}, '${drug.bentuk_obat}')">
+            <div class="modern-search-item" style="cursor: pointer;" onclick="addToCart('${drug.id}', '${drug.nama_obat}', ${drug.harga_jual}, ${drug.stok}, '${drug.bentuk_obat}')">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="mb-1">${drug.nama_obat}</h6>
-                        <small class="text-muted">${drug.bentuk_obat} - Stock: ${drug.stok}</small>
+                        <h6 class="mb-1" style="color: #f8fafc;">${drug.nama_obat}</h6>
+                        <small style="color: #94a3b8;">${drug.bentuk_obat} - Stock: ${drug.stok}</small>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-primary">$${drug.harga_jual}</span>
+                        <span class="modern-badge bg-primary">$${drug.harga_jual}</span>
                     </div>
                 </div>
             </div>
@@ -307,22 +696,22 @@ function updateCartDisplay() {
         row.innerHTML = `
             <td>
                 <div>
-                    <div class="fw-bold">${item.nama_obat}</div>
-                    <small class="text-muted">${item.bentuk_obat}</small>
+                    <div class="fw-bold" style="color: #f8fafc;">${item.nama_obat}</div>
+                    <small style="color: #94a3b8;">${item.bentuk_obat}</small>
                 </div>
             </td>
-            <td><span class="badge bg-light text-dark">${item.stok}</span></td>
+            <td><span class="modern-badge bg-light">${item.stok}</span></td>
             <td>
-                <div class="input-group input-group-sm" style="min-width: 120px;">
-                    <button class="btn btn-outline-secondary decrease-btn" type="button" title="Decrease quantity" style="min-width: 30px;">-</button>
-                    <input type="number" class="form-control text-center qty-input" min="1" max="${item.stok}" id="qty-${index}" style="min-width: 60px; padding: 0.25rem 0.1rem;">
-                    <button class="btn btn-outline-secondary increase-btn" type="button" title="Increase quantity" style="min-width: 30px;">+</button>
+                <div class="modern-quantity-controls">
+                    <button class="modern-quantity-btn decrease-btn" type="button" title="Decrease quantity">-</button>
+                    <input type="number" class="modern-quantity-input qty-input" min="1" max="${item.stok}" id="qty-${index}">
+                    <button class="modern-quantity-btn increase-btn" type="button" title="Increase quantity">+</button>
                 </div>
             </td>
-            <td>$${item.harga_satuan.toFixed(2)}</td>
-            <td>$${subtotal.toFixed(2)}</td>
+            <td style="color: #e2e8f0;">$${item.harga_satuan.toFixed(2)}</td>
+            <td style="color: #10b981; font-weight: 600;">$${subtotal.toFixed(2)}</td>
             <td>
-                <button class="btn btn-outline-danger btn-sm remove-btn" title="Remove item">
+                <button class="modern-btn-danger remove-btn" title="Remove item">
                     <i class="bi bi-trash"></i>
                 </button>
             </td>

@@ -355,6 +355,115 @@
 .modern-modal .modal-footer {
     border-top: 1px solid #334155;
 }
+
+/* Modern Pagination Styles - Force Override Bootstrap */
+.pagination {
+    margin-bottom: 0 !important;
+}
+
+.pagination .page-link {
+    background-color: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    margin: 0 2px !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+}
+
+.pagination .page-link:hover {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #f8fafc !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2) !important;
+    text-decoration: none !important;
+}
+
+.pagination .page-link:focus {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.2) !important;
+    text-decoration: none !important;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+.pagination .page-item.active .page-link:hover {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #64748b !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+.pagination .page-item.disabled .page-link:hover {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #64748b !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.pagination .page-item:first-child .page-link {
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+}
+
+/* Additional overrides for any Bootstrap pagination variants */
+.pagination .page-link[aria-label="Previous"],
+.pagination .page-link[aria-label="Next"] {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.pagination .page-link[aria-label="Previous"]:hover,
+.pagination .page-link[aria-label="Next"]:hover {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: #f8fafc !important;
+}
+
+/* Custom pagination container styling */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        --bs-pagination-padding-x: 0.5rem;
+        --bs-pagination-padding-y: 0.375rem;
+        --bs-pagination-font-size: 0.75rem;
+    }
+    
+    .pagination .page-link {
+        margin: 0 1px;
+    }
+}
 </style>
 @endpush
 
@@ -578,13 +687,15 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
+                <!-- Modern Pagination -->
                 <div class="p-3" style="background: #0f172a; border-top: 1px solid #334155;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div style="color: #94a3b8;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div style="color: #94a3b8; font-size: 0.875rem;">
                             Showing {{ $drugs->firstItem() }} to {{ $drugs->lastItem() }} of {{ $drugs->total() }} results
                         </div>
-                        {{ $drugs->appends(request()->query())->links() }}
+                        <div class="pagination-wrapper">
+                            {{ $drugs->appends(request()->query())->links() }}
+                        </div>
                     </div>
                 </div>
             @else
