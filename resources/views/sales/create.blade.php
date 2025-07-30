@@ -68,6 +68,7 @@
     border: 1px solid #475569 !important;
     color: #e2e8f0 !important;
     border-radius: 8px;
+    padding: 0.75rem 1rem;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
     background-repeat: no-repeat !important;
     background-position: right 0.75rem center !important;
@@ -83,6 +84,32 @@
 }
 
 .modern-form-select option {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+/* Fix Bootstrap form-select specifically */
+.form-select {
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+    padding-right: 2.25rem !important;
+}
+
+.form-select:focus {
+    background: #334155 !important;
+    border-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+.form-select option {
     background: #334155 !important;
     color: #e2e8f0 !important;
 }
@@ -123,8 +150,8 @@
 }
 
 .modern-table {
-    background: #1e293b;
-    color: #e2e8f0;
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
     margin: 0;
 }
 
@@ -133,6 +160,8 @@
     color: #f8fafc !important;
     border-bottom: 1px solid #334155 !important;
     border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
     padding: 1rem !important;
     font-weight: 600;
 }
@@ -149,7 +178,39 @@
 .modern-table tbody td {
     color: #e2e8f0 !important;
     border-color: #334155 !important;
+    border-left: none !important;
+    border-right: none !important;
     padding: 1rem !important;
+}
+
+/* Force override any Bootstrap table styles */
+.table {
+    --bs-table-bg: #1e293b !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-hover-bg: #334155 !important;
+    --bs-table-hover-color: #f8fafc !important;
+}
+
+.table > :not(caption) > * > * {
+    background-color: var(--bs-table-bg) !important;
+    color: var(--bs-table-color) !important;
+    border-bottom-color: var(--bs-table-border-color) !important;
+}
+
+.table > thead {
+    background-color: #0f172a !important;
+}
+
+.table > thead th {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #334155 !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--bs-table-hover-bg) !important;
+    color: var(--bs-table-hover-color) !important;
 }
 
 .modern-empty-cart {

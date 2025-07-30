@@ -2,101 +2,349 @@
 
 @section('title', 'Sale Details')
 
-@section('header')
-    @section('breadcrumb')
-        <li class="breadcrumb-item"><a href="{{ route('sales.index') }}">Sales History</a></li>
-        <li class="breadcrumb-item active">Sale Details</li>
-    @endsection
-@endsection
+@push('styles')
+<style>
+/* Modern Sales Detail Page Styles */
+.modern-sales-header {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: #e2e8f0;
+}
+
+.modern-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+.modern-card-header {
+    background: #0f172a;
+    border-bottom: 1px solid #334155;
+    padding: 1.5rem;
+    color: #f8fafc;
+    border-radius: 16px 16px 0 0;
+}
+
+.modern-card-body {
+    padding: 2rem;
+    color: #e2e8f0;
+}
+
+.modern-btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.modern-btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.modern-btn-outline {
+    background: transparent;
+    border: 1px solid #475569;
+    color: #e2e8f0;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.modern-btn-outline:hover {
+    background: #334155;
+    border-color: #3b82f6;
+    color: #e2e8f0;
+    text-decoration: none;
+}
+
+.modern-table {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+    margin: 0;
+}
+
+.modern-table thead th {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-bottom: 1px solid #334155 !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: 1rem !important;
+    font-weight: 600;
+}
+
+.modern-table tbody tr {
+    background: #1e293b !important;
+    border-bottom: 1px solid #334155 !important;
+}
+
+.modern-table tbody tr:hover {
+    background: #334155 !important;
+}
+
+.modern-table tbody td {
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: 1rem !important;
+}
+
+.modern-table tfoot th {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-top: 1px solid #334155 !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: 1rem !important;
+    font-weight: 600;
+}
+
+/* Force override any Bootstrap table styles */
+.table {
+    --bs-table-bg: #1e293b !important;
+    --bs-table-color: #e2e8f0 !important;
+    --bs-table-border-color: #334155 !important;
+    --bs-table-hover-bg: #334155 !important;
+    --bs-table-hover-color: #f8fafc !important;
+}
+
+.table > :not(caption) > * > * {
+    background-color: var(--bs-table-bg) !important;
+    color: var(--bs-table-color) !important;
+    border-bottom-color: var(--bs-table-border-color) !important;
+}
+
+.table > thead {
+    background-color: #0f172a !important;
+}
+
+.table > thead th {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #334155 !important;
+}
+
+.table > tfoot {
+    background-color: #0f172a !important;
+}
+
+.table > tfoot th {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #334155 !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--bs-table-hover-bg) !important;
+    color: var(--bs-table-hover-color) !important;
+}
+
+.modern-badge {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.modern-badge.bg-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+}
+
+.modern-badge.bg-success {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white !important;
+}
+
+.modern-badge.bg-secondary {
+    background: linear-gradient(135deg, #64748b, #475569) !important;
+    color: white !important;
+}
+
+.modern-badge.bg-light {
+    background: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+.drug-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 1rem;
+}
+
+.info-section {
+    padding: 1.5rem;
+}
+
+.info-item {
+    margin-bottom: 1.5rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.info-value {
+    color: #f8fafc;
+    font-weight: 600;
+}
+
+.empty-customer {
+    text-align: center;
+    padding: 2rem;
+    color: #94a3b8;
+}
+
+.empty-customer-icon {
+    font-size: 3rem;
+    color: #475569;
+    margin-bottom: 1rem;
+}
+</style>
+@endpush
 
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-12 col-xl-10">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="mb-1">Sale Transaction Details</h4>
-                    <p class="text-muted mb-0">{{ $sale->kode_transaksi }} - {{ $sale->created_at->format('F d, Y H:i A') }}</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="btn btn-outline-primary">
-                        <i class="bi bi-receipt me-2"></i>Print Receipt
-                    </a>
-                    <a href="{{ route('sales.index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-2"></i>Back to List
-                    </a>
+            <!-- Modern Header -->
+            <div class="modern-sales-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; margin-right: 1rem;">
+                            <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-0 fw-bold" style="color: #f8fafc;">Sale Transaction Details</h2>
+                            <p class="mb-0" style="color: #94a3b8;">{{ $sale->kode_transaksi }} - {{ $sale->created_at->format('F d, Y H:i A') }}</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="modern-btn-primary">
+                            <i class="bi bi-receipt me-2"></i>Print Receipt
+                        </a>
+                        <a href="{{ route('sales.index') }}" class="modern-btn-outline">
+                            <i class="bi bi-arrow-left me-2"></i>Back to List
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <div class="row g-4">
                 <!-- Transaction Information -->
                 <div class="col-lg-8">
-                    <div class="card mb-4">
-                        <div class="card-header">
+                    <div class="modern-card mb-4">
+                        <div class="modern-card-header">
                             <h5 class="mb-0">
                                 <i class="bi bi-receipt-cutoff me-2"></i>Transaction Information
                             </h5>
                         </div>
-                        <div class="card-body">
+                        <div class="modern-card-body">
                             <div class="row g-4">
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted">Transaction Code</label>
-                                    <div class="fw-bold text-primary fs-5">{{ $sale->kode_transaksi }}</div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted">Transaction Date</label>
-                                    <div class="fw-bold">{{ $sale->created_at->format('F d, Y H:i A') }}</div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted">Payment Method</label>
-                                    <div>
-                                        <span class="badge bg-primary fs-6">{{ ucfirst(str_replace('_', ' ', $sale->metode_pembayaran)) }}</span>
+                                    <div class="info-item">
+                                        <span class="info-label">Transaction Code</span>
+                                        <div class="info-value" style="color: #3b82f6; font-size: 1.25rem;">{{ $sale->kode_transaksi }}</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted">Status</label>
-                                    <div>
-                                        <span class="badge bg-success fs-6">{{ ucfirst($sale->status) }}</span>
+                                    <div class="info-item">
+                                        <span class="info-label">Transaction Date</span>
+                                        <div class="info-value">{{ $sale->created_at->format('F d, Y H:i A') }}</div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted">Pharmacist</label>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-sm me-2">
-                                            <i class="bi bi-person-circle text-primary fs-5"></i>
-                                        </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Payment Method</span>
                                         <div>
-                                            <div class="fw-bold">{{ $sale->user->name }}</div>
-                                            <small class="text-muted">{{ $sale->user->email }}</small>
+                                            <span class="modern-badge bg-primary">{{ ucfirst(str_replace('_', ' ', $sale->metode_pembayaran)) }}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted">Total Amount</label>
-                                    <div class="fw-bold text-success fs-4">${{ number_format($sale->total_harga, 2) }}</div>
+                                    <div class="info-item">
+                                        <span class="info-label">Status</span>
+                                        <div>
+                                            <span class="modern-badge bg-success">{{ ucfirst($sale->status) }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <span class="info-label">Pharmacist</span>
+                                        <div class="d-flex align-items-center">
+                                            <div class="drug-avatar me-2" style="width: 32px; height: 32px; font-size: 1rem;">
+                                                <i class="bi bi-person"></i>
+                                            </div>
+                                            <div>
+                                                <div class="info-value">{{ $sale->user->name }}</div>
+                                                <small style="color: #94a3b8;">{{ $sale->user->email }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-item">
+                                        <span class="info-label">Total Amount</span>
+                                        <div class="info-value" style="color: #10b981; font-size: 1.5rem;">${{ number_format($sale->total_harga, 2) }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Sale Items -->
-                    <div class="card">
-                        <div class="card-header">
+                    <div class="modern-card">
+                        <div class="modern-card-header">
                             <h5 class="mb-0">
                                 <i class="bi bi-bag me-2"></i>Sale Items
-                                <span class="badge bg-secondary ms-2">{{ $sale->saleDetails->count() }} items</span>
+                                <span class="modern-badge bg-secondary ms-2">{{ $sale->saleDetails->count() }} items</span>
                             </h5>
                         </div>
-                        <div class="card-body p-0">
+                        <div class="p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
+                                <table class="modern-table table mb-0">
+                                    <thead>
                                         <tr>
                                             <th>Drug Name</th>
                                             <th>Form</th>
@@ -110,36 +358,34 @@
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <div class="avatar-wrapper me-2">
-                                                            <div class="avatar avatar-sm">
-                                                                <i class="bi bi-capsule-pill text-primary fs-5"></i>
-                                                            </div>
+                                                        <div class="drug-avatar me-2" style="width: 32px; height: 32px; font-size: 1rem;">
+                                                            <i class="bi bi-capsule-pill"></i>
                                                         </div>
                                                         <div>
-                                                            <h6 class="mb-0">{{ $detail->drug->nama_obat }}</h6>
-                                                            <small class="text-muted">{{ $detail->drug->kategori }}</small>
+                                                            <h6 class="mb-0 fw-bold" style="color: #f8fafc;">{{ $detail->drug->nama_obat }}</h6>
+                                                            <small style="color: #94a3b8;">{{ $detail->drug->kategori }}</small>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-light text-dark">{{ $detail->drug->bentuk_obat }}</span>
+                                                    <span class="modern-badge bg-light">{{ $detail->drug->bentuk_obat }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="fw-bold">{{ $detail->jumlah }}</span>
+                                                    <span class="fw-bold" style="color: #f8fafc;">{{ $detail->jumlah }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="fw-bold">${{ number_format($detail->harga_satuan, 2) }}</span>
+                                                    <span class="fw-bold" style="color: #f8fafc;">${{ number_format($detail->harga_satuan, 2) }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="fw-bold text-success">${{ number_format($detail->subtotal, 2) }}</span>
+                                                    <span class="fw-bold" style="color: #10b981;">${{ number_format($detail->subtotal, 2) }}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                    <tfoot class="table-light">
+                                    <tfoot>
                                         <tr>
-                                            <th colspan="4" class="text-end">Total Amount:</th>
-                                            <th class="text-success">${{ number_format($sale->total_harga, 2) }}</th>
+                                            <th colspan="4" class="text-end" style="color: #f8fafc;">Total Amount:</th>
+                                            <th style="color: #10b981; font-size: 1.125rem;">${{ number_format($sale->total_harga, 2) }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -151,68 +397,70 @@
                 <!-- Sidebar Information -->
                 <div class="col-lg-4">
                     <!-- Customer Information -->
-                    <div class="card mb-4">
-                        <div class="card-header">
+                    <div class="modern-card mb-4">
+                        <div class="modern-card-header">
                             <h6 class="mb-0">
                                 <i class="bi bi-person me-2"></i>Customer Information
                             </h6>
                         </div>
-                        <div class="card-body">
+                        <div class="info-section">
                             @if($sale->customer)
-                                <div class="mb-3">
-                                    <label class="form-label text-muted small">Customer Name</label>
-                                    <div class="fw-bold">{{ $sale->customer->nama_pelanggan }}</div>
+                                <div class="info-item">
+                                    <span class="info-label">Customer Name</span>
+                                    <div class="info-value">{{ $sale->customer->nama_pelanggan }}</div>
                                 </div>
                                 
-                                <div class="mb-3">
-                                    <label class="form-label text-muted small">Phone Number</label>
-                                    <div class="fw-bold">{{ $sale->customer->nomor_telepon }}</div>
+                                <div class="info-item">
+                                    <span class="info-label">Phone Number</span>
+                                    <div class="info-value">{{ $sale->customer->nomor_telepon }}</div>
                                 </div>
 
                                 @if($sale->customer->alamat)
-                                    <div class="mb-3">
-                                        <label class="form-label text-muted small">Address</label>
-                                        <div>{{ $sale->customer->alamat }}</div>
+                                    <div class="info-item">
+                                        <span class="info-label">Address</span>
+                                        <div class="info-value">{{ $sale->customer->alamat }}</div>
                                     </div>
                                 @endif
 
                                 @if($sale->customer->tanggal_lahir)
-                                    <div class="mb-3">
-                                        <label class="form-label text-muted small">Date of Birth</label>
-                                        <div>{{ \Carbon\Carbon::parse($sale->customer->tanggal_lahir)->format('F d, Y') }}</div>
+                                    <div class="info-item">
+                                        <span class="info-label">Date of Birth</span>
+                                        <div class="info-value">{{ \Carbon\Carbon::parse($sale->customer->tanggal_lahir)->format('F d, Y') }}</div>
                                     </div>
                                 @endif
 
-                                <div class="mb-0">
-                                    <label class="form-label text-muted small">Customer Since</label>
-                                    <div>{{ $sale->customer->created_at->format('F Y') }}</div>
+                                <div class="info-item">
+                                    <span class="info-label">Customer Since</span>
+                                    <div class="info-value">{{ $sale->customer->created_at->format('F Y') }}</div>
                                 </div>
                             @else
-                                <div class="text-center text-muted py-3">
-                                    <i class="bi bi-person-x display-1 mb-2"></i>
-                                    <h6>Walk-in Customer</h6>
-                                    <p class="mb-0 small">No customer information recorded for this transaction.</p>
+                                <div class="empty-customer">
+                                    <div class="empty-customer-icon">
+                                        <i class="bi bi-person-x"></i>
+                                    </div>
+                                    <h6 style="color: #f8fafc; margin-bottom: 0.5rem;">Walk-in Customer</h6>
+                                    <p class="mb-0" style="font-size: 0.875rem;">No customer information recorded for this transaction.</p>
                                 </div>
                             @endif
                         </div>
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="card mb-4">
-                        <div class="card-header">
+                    <div class="modern-card mb-4">
+                        <div class="modern-card-header">
                             <h6 class="mb-0">
                                 <i class="bi bi-lightning-charge me-2"></i>Quick Actions
                             </h6>
                         </div>
-                        <div class="card-body">
+                        <div class="modern-card-body">
                             <div class="d-grid gap-2">
-                                <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="btn btn-outline-primary">
+                                <a href="{{ route('sales.receipt', $sale) }}" target="_blank" class="modern-btn-primary">
                                     <i class="bi bi-receipt me-2"></i>Print Receipt
                                 </a>
-                                <a href="{{ route('sales.create') }}" class="btn btn-outline-success">
+                                <a href="{{ route('sales.create') }}" class="modern-btn-outline">
                                     <i class="bi bi-plus-circle me-2"></i>New Sale
                                 </a>
-                                <button class="btn btn-outline-warning" onclick="alert('Refund functionality will be implemented in the next phase')">
+                                <button class="modern-btn-outline" onclick="alert('Refund functionality will be implemented in the next phase')" style="color: #fbbf24; border-color: #fbbf24;">
                                     <i class="bi bi-arrow-clockwise me-2"></i>Process Refund
                                 </button>
                             </div>
@@ -220,33 +468,33 @@
                     </div>
 
                     <!-- Transaction Summary -->
-                    <div class="card">
-                        <div class="card-header">
+                    <div class="modern-card">
+                        <div class="modern-card-header">
                             <h6 class="mb-0">
                                 <i class="bi bi-calculator me-2"></i>Transaction Summary
                             </h6>
                         </div>
-                        <div class="card-body">
+                        <div class="info-section">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Total Items:</span>
-                                <span class="fw-bold">{{ $sale->saleDetails->sum('jumlah') }}</span>
+                                <span style="color: #94a3b8;">Total Items:</span>
+                                <span class="fw-bold" style="color: #f8fafc;">{{ $sale->saleDetails->sum('jumlah') }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Unique Drugs:</span>
-                                <span class="fw-bold">{{ $sale->saleDetails->count() }}</span>
+                                <span style="color: #94a3b8;">Unique Drugs:</span>
+                                <span class="fw-bold" style="color: #f8fafc;">{{ $sale->saleDetails->count() }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal:</span>
-                                <span class="fw-bold">${{ number_format($sale->total_harga, 2) }}</span>
+                                <span style="color: #94a3b8;">Subtotal:</span>
+                                <span class="fw-bold" style="color: #f8fafc;">${{ number_format($sale->total_harga, 2) }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Tax (0%):</span>
-                                <span class="fw-bold">$0.00</span>
+                                <span style="color: #94a3b8;">Tax (0%):</span>
+                                <span class="fw-bold" style="color: #f8fafc;">$0.00</span>
                             </div>
-                            <hr>
+                            <hr style="border-color: #334155;">
                             <div class="d-flex justify-content-between">
-                                <span class="fw-bold">Total Amount:</span>
-                                <span class="fw-bold text-success fs-5">${{ number_format($sale->total_harga, 2) }}</span>
+                                <span class="fw-bold" style="color: #f8fafc;">Total Amount:</span>
+                                <span class="fw-bold" style="color: #10b981; font-size: 1.25rem;">${{ number_format($sale->total_harga, 2) }}</span>
                             </div>
                         </div>
                     </div>

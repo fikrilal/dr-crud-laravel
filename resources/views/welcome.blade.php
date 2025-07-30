@@ -527,7 +527,7 @@
                             <div class="alert alert-success border-0">
                                 <strong>Demo Credentials:</strong><br>
                                 Username: pharmacist<br>
-                                Password: pharma123
+                                Password: pharmacist123
                             </div>
                         </div>
                     </div>
