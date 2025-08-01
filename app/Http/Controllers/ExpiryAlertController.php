@@ -134,11 +134,18 @@ class ExpiryAlertController extends Controller
     
     public function updateExpiryDate(Request $request, Drug $drug)
     {
-        // This would be used if we had actual expiry date fields in the database
-        // For now, just return a success message
+        $request->validate([
+            'expiry_date' => 'required|date|after_or_equal:today'
+        ]);
+        
+        $drug->update([
+            'tanggal_kadaluarsa' => $request->expiry_date
+        ]);
+        
         return response()->json([
             'success' => true,
-            'message' => 'Expiry date update functionality would be implemented here with actual database fields'
+            'message' => 'Expiry date updated successfully',
+            'new_expiry_date' => $drug->fresh()->tanggal_kadaluarsa
         ]);
     }
     

@@ -154,7 +154,7 @@
                                 <label for="tanggal_kadaluarsa" class="form-label">Expiry Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control @error('tanggal_kadaluarsa') is-invalid @enderror" 
                                        id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" 
-                                       value="{{ old('tanggal_kadaluarsa', $drug->tanggal_kadaluarsa) }}" required>
+                                       value="{{ old('tanggal_kadaluarsa', $drug->tanggal_kadaluarsa ? $drug->tanggal_kadaluarsa->format('Y-m-d') : '') }}" required>
                                 @error('tanggal_kadaluarsa')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
