@@ -1,7 +1,8 @@
 import "./bootstrap";
 
-// Bootstrap JavaScript
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// Bootstrap JavaScript - Import and expose globally
+import * as bootstrap from "bootstrap";
+window.bootstrap = bootstrap;
 
 // Custom pharmacy management functionality
 document.addEventListener("DOMContentLoaded", function () {

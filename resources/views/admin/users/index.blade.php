@@ -673,7 +673,7 @@
                                                     <li><hr class="dropdown-divider modern-dropdown-divider"></li>
                                                     <li>
                                                         <button type="button" class="dropdown-item modern-dropdown-item" style="color: #ef4444 !important;" 
-                                                                onclick="confirmDelete({{ $user->id }}, '{{ $user->name }}')">
+                                                                onclick="confirmDelete({{ $user->id }}, {{ json_encode($user->name) }})">
                                                             <i class="bi bi-trash me-2"></i>Delete User
                                                         </button>
                                                     </li>
@@ -726,26 +726,49 @@
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- Enhanced Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal-content" style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0;">
+            <div class="modal-header" style="border-bottom: 1px solid #334155;">
                 <h5 class="modal-title text-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm User Deletion
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete user <strong id="deleteUserName"></strong>?</p>
-                <p class="text-danger mb-0">This action cannot be undone.</p>
+                <div class="alert alert-warning" style="background: rgba(251, 191, 36, 0.1); border: 1px solid #f59e0b; color: #fbbf24;">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                
+                <p>Are you sure you want to permanently delete the user:</p>
+                <div class="text-center p-3" style="background: #334155; border-radius: 8px; margin: 1rem 0;">
+                    <strong id="deleteUserName" style="color: #f8fafc; font-size: 1.1rem;"></strong>
+                </div>
+                
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Note: Users with transaction history cannot be deleted and will be deactivated instead.
+                    </small>
+                </div>
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="confirmDeletion" required>
+                    <label class="form-check-label" for="confirmDeletion">
+                        I understand that this action will permanently delete the user and cannot be undone.
+                    </label>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <div class="modal-footer" style="border-top: 1px solid #334155;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
                 <form id="deleteForm" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
                         <i class="bi bi-trash me-2"></i>Delete User
                     </button>
                 </form>
@@ -757,10 +780,50 @@
 
 @push('scripts')
 <script>
+console.log('User management JavaScript loaded');
+console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+
+// Enhanced delete confirmation
 function confirmDelete(userId, userName) {
-    document.getElementById('deleteUserName').textContent = userName;
-    document.getElementById('deleteForm').action = `/admin/users/${userId}`;
-    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    console.log('confirmDelete called with:', { userId, userName });
+    
+    const modal = document.getElementById('deleteModal');
+    const deleteForm = document.getElementById('deleteForm');
+    const deleteUserNameElement = document.getElementById('deleteUserName');
+    const confirmCheckbox = document.getElementById('confirmDeletion');
+    const confirmButton = document.getElementById('confirmDeleteBtn');
+    
+    console.log('Modal elements found:', {
+        modal: !!modal,
+        deleteForm: !!deleteForm,
+        deleteUserNameElement: !!deleteUserNameElement,
+        confirmCheckbox: !!confirmCheckbox,
+        confirmButton: !!confirmButton
+    });
+    
+    if (!modal || !deleteForm || !deleteUserNameElement) {
+        console.error('Required modal elements not found');
+        alert('Error: Modal elements not found. Please refresh the page.');
+        return;
+    }
+    
+    // Set the form action and user name
+    deleteForm.action = `/admin/users/${userId}`;
+    deleteUserNameElement.textContent = userName;
+    
+    // Reset checkbox and button state
+    if (confirmCheckbox) {
+        confirmCheckbox.checked = false;
+    }
+    if (confirmButton) {
+        confirmButton.disabled = true;
+    }
+    
+    console.log('Modal configured - showing modal...');
+    
+    // Show the modal - Bootstrap should now be available globally
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
 }
 
 function toggleUserStatus(userId, newStatus) {
@@ -791,8 +854,29 @@ function exportUsers() {
     alert('Export functionality will be implemented in the next phase');
 }
 
-// Auto-submit search form on filter change
+// Enable/disable delete button based on checkbox
 document.addEventListener('DOMContentLoaded', function() {
+    const confirmCheckbox = document.getElementById('confirmDeletion');
+    const confirmButton = document.getElementById('confirmDeleteBtn');
+    
+    if (confirmCheckbox && confirmButton) {
+        confirmCheckbox.addEventListener('change', function() {
+            confirmButton.disabled = !this.checked;
+            console.log('Checkbox changed:', this.checked);
+        });
+        
+        // Form submission with loading state
+        const deleteForm = document.getElementById('deleteForm');
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function(e) {
+                console.log('Delete form submitted');
+                confirmButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+            });
+        }
+    }
+
+    // Auto-submit search form on filter change
     const userTypeSelect = document.querySelector('select[name="user_type"]');
     const statusSelect = document.querySelector('select[name="status"]');
     

@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\Purchase;
+use App\Models\Sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -250,27 +253,66 @@ class UserController extends Controller
     
     public function destroy(User $user)
     {
+        Log::info('Delete user request initiated', [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'user_type' => $user->user_type,
+            'requested_by' => auth()->id()
+        ]);
+
         // Prevent deleting own account
         if ($user->id === auth()->id()) {
+            Log::warning('User attempted to delete own account', [
+                'user_id' => $user->id
+            ]);
+            
             return redirect()
                 ->route('admin.users.index')
                 ->with('error', 'You cannot delete your own account.');
         }
         
         // Check if user has transaction history
-        if ($user->sales()->count() > 0 || $user->purchases()->count() > 0) {
+        $salesCount = $user->sales()->count();
+        $purchasesCount = $user->purchases()->count();
+        
+        Log::info('Checking user transaction history', [
+            'user_id' => $user->id,
+            'sales_count' => $salesCount,
+            'purchases_count' => $purchasesCount
+        ]);
+        
+        if ($salesCount > 0 || $purchasesCount > 0) {
+            Log::warning('Cannot delete user with transaction history', [
+                'user_id' => $user->id,
+                'sales_count' => $salesCount,
+                'purchases_count' => $purchasesCount
+            ]);
+            
             return redirect()
                 ->route('admin.users.index')
                 ->with('error', 'Cannot delete user with existing transaction history.');
         }
         
         // For customers, check if they have online orders
+        $customerOrdersCount = 0;
         if ($user->isCustomer() && $user->kd_pelanggan) {
-            $customerOrders = \App\Models\Sale::where('kd_pelanggan', $user->kd_pelanggan)
+            $customerOrdersCount = \App\Models\Sale::where('kd_pelanggan', $user->kd_pelanggan)
                 ->where('tipe_transaksi', 'online')
                 ->count();
             
-            if ($customerOrders > 0) {
+            Log::info('Checking customer order history', [
+                'user_id' => $user->id,
+                'kd_pelanggan' => $user->kd_pelanggan,
+                'customer_orders_count' => $customerOrdersCount
+            ]);
+            
+            if ($customerOrdersCount > 0) {
+                Log::warning('Cannot delete customer with order history', [
+                    'user_id' => $user->id,
+                    'customer_orders_count' => $customerOrdersCount
+                ]);
+                
                 return redirect()
                     ->route('admin.users.index')
                     ->with('error', 'Cannot delete customer with existing order history.');
@@ -280,25 +322,44 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             
+            $userName = $user->name;
+            $userType = $user->user_type;
+            
             // If customer, delete customer record first
             if ($user->isCustomer() && $user->customer) {
+                Log::info('Deleting customer record', [
+                    'user_id' => $user->id,
+                    'customer_id' => $user->customer->id
+                ]);
                 $user->customer->delete();
             }
             
             $user->delete();
             
+            Log::info('User successfully deleted', [
+                'user_id' => $user->id,
+                'user_name' => $userName,
+                'user_type' => $userType
+            ]);
+            
             DB::commit();
             
             return redirect()
                 ->route('admin.users.index')
-                ->with('success', 'User deleted successfully!');
+                ->with('success', "User '{$userName}' has been successfully deleted!");
                 
         } catch (\Exception $e) {
             DB::rollback();
             
+            Log::error('Failed to delete user', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return redirect()
                 ->route('admin.users.index')
-                ->with('error', 'Failed to delete user. Please try again.');
+                ->with('error', 'Failed to delete user: ' . $e->getMessage());
         }
     }
     
