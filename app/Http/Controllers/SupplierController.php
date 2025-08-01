@@ -69,12 +69,23 @@ class SupplierController extends Controller
     public function store(StoreSupplierRequest $request)
     {
         try {
-            // Generate supplier code
-            $lastSupplier = Supplier::orderBy('kd_supplier', 'desc')->first();
+            // Generate supplier code - improved logic to avoid duplicates
+            $lastSupplier = Supplier::where('kd_supplier', 'like', 'SP%')
+                ->orderByRaw('CAST(SUBSTRING(kd_supplier, 3) AS UNSIGNED) DESC')
+                ->first();
+            
             $nextNumber = $lastSupplier 
                 ? (int)substr($lastSupplier->kd_supplier, 2) + 1 
                 : 1;
-            $supplierCode = 'SP' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            
+            // Keep trying until we find a unique code
+            do {
+                $supplierCode = 'SP' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+                $exists = Supplier::where('kd_supplier', $supplierCode)->exists();
+                if ($exists) {
+                    $nextNumber++;
+                }
+            } while ($exists);
 
             $supplier = Supplier::create([
                 'kd_supplier' => $supplierCode,
@@ -87,7 +98,7 @@ class SupplierController extends Controller
                 'status' => $request->status,
             ]);
 
-            return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully!');
+            return redirect()->route('admin.suppliers.index')->with('success', 'Supplier created successfully!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Failed to create supplier: ' . $e->getMessage());
         }
@@ -133,7 +144,7 @@ class SupplierController extends Controller
                 'status' => $request->status,
             ]);
 
-            return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully!');
+            return redirect()->route('admin.suppliers.index')->with('success', 'Supplier updated successfully!');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'Failed to update supplier: ' . $e->getMessage());
         }
@@ -155,7 +166,7 @@ class SupplierController extends Controller
             }
 
             $supplier->delete();
-            return redirect()->route('suppliers.index')->with('success', 'Supplier deleted successfully!');
+            return redirect()->route('admin.suppliers.index')->with('success', 'Supplier deleted successfully!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to delete supplier: ' . $e->getMessage());
         }
