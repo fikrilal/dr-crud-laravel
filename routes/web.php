@@ -10,6 +10,7 @@ use App\Http\Controllers\Customer\CatalogController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\OrderManagementController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // User Management
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::post('/users/{user}/toggle-status', [App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+    
+    // Debug route for user creation
+    Route::post('/debug-user-creation', function(Request $request) {
+        \Log::info('Debug route hit', ['data' => $request->all()]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Debug route hit successfully',
+            'data' => $request->all()
+        ]);
+    })->name('debug.user.creation');
     
     // Supplier Management
     Route::resource('suppliers', SupplierController::class);

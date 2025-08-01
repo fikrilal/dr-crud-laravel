@@ -21,9 +21,33 @@
                     </h5>
                 </div>
                 <div class="card-body">
+                    <!-- Display any errors or success messages -->
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <h6><i class="bi bi-exclamation-triangle me-2"></i>Please fix the following errors:</h6>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+                        </div>
+                    @endif
+
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+                        </div>
+                    @endif
+
                     <p class="text-muted mb-4">Create a new admin or pharmacist account. Customer accounts are created through registration.</p>
                     
-                    <form method="POST" action="{{ route('admin.users.store') }}">
+                    <form method="POST" action="{{ route('admin.users.store') }}" id="userForm">
                         @csrf
                         
                         <div class="row">
@@ -201,7 +225,7 @@
                             <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left me-2"></i>Back to Users
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
                                 <i class="bi bi-check-circle me-2"></i>Create User
                             </button>
                         </div>
@@ -273,6 +297,8 @@ function toggleCustomerFields() {
     const userType = document.getElementById('user_type').value;
     const customerFields = document.getElementById('customerFields');
     
+    console.log('User type changed to:', userType);
+    
     if (userType === 'customer') {
         customerFields.style.display = 'block';
         // Make customer fields required
@@ -280,42 +306,221 @@ function toggleCustomerFields() {
         document.getElementById('customer_phone').required = true;
         document.getElementById('customer_address').required = true;
         document.getElementById('customer_city').required = true;
+        console.log('Customer fields are now visible and required');
     } else {
         customerFields.style.display = 'none';
-        // Remove required from customer fields
-        document.getElementById('customer_name').required = false;
-        document.getElementById('customer_phone').required = false;
-        document.getElementById('customer_address').required = false;
-        document.getElementById('customer_city').required = false;
+        // Remove required from customer fields and clear their values
+        const customerInputs = ['customer_name', 'customer_phone', 'customer_address', 'customer_city', 'customer_email', 'birth_date', 'gender'];
+        customerInputs.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.required = false;
+                field.value = ''; // Clear the value to prevent validation issues
+            }
+        });
+        console.log('Customer fields are now hidden, not required, and cleared');
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Setting up form handlers');
+    
     // Check initial state on page load
     toggleCustomerFields();
+    
+    // Add form submission handler
+    const form = document.getElementById('userForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (form) {
+        console.log('Form found, adding submit event listener');
+        console.log('Form action:', form.action);
+        console.log('Form method:', form.method);
+        
+        // Check CSRF token
+        const csrfToken = form.querySelector('input[name="_token"]');
+        if (csrfToken) {
+            console.log('CSRF token found:', csrfToken.value.substring(0, 10) + '...');
+        } else {
+            console.error('CSRF token not found!');
+            alert('Error: CSRF token missing. Please refresh the page.');
+        }
+        
+        form.addEventListener('submit', function(e) {
+            console.log('Form submit event triggered');
+            console.log('Event type:', e.type);
+            console.log('Target:', e.target);
+            
+            // Prevent double submission
+            if (submitBtn.disabled) {
+                console.log('Submit button already disabled, preventing double submission');
+                e.preventDefault();
+                return false;
+            }
+            
+            // Get form data for debugging
+            const formData = new FormData(form);
+            const formObject = {};
+            for (let [key, value] of formData.entries()) {
+                if (key === 'password' || key === 'password_confirmation') {
+                    formObject[key] = '[HIDDEN]';
+                } else {
+                    formObject[key] = value;
+                }
+            }
+            
+            console.log('Form data being submitted:', formObject);
+            
+            // Check form validity using HTML5 validation
+            if (!form.checkValidity()) {
+                console.error('Form validation failed');
+                form.reportValidity();
+                e.preventDefault();
+                return false;
+            }
+            
+            // Check for required fields manually
+            const requiredFields = form.querySelectorAll('[required]');
+            let missingFields = [];
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    missingFields.push(field.name || field.id);
+                }
+            });
+            
+            if (missingFields.length > 0) {
+                console.error('Missing required fields:', missingFields);
+                alert('Please fill in all required fields: ' + missingFields.join(', '));
+                e.preventDefault();
+                return false;
+            }
+            
+            // Password confirmation check
+            const password = document.getElementById('password').value;
+            const passwordConfirmation = document.getElementById('password_confirmation').value;
+            
+            if (password !== passwordConfirmation) {
+                console.error('Password confirmation does not match');
+                alert('Password confirmation does not match. Please check your passwords.');
+                e.preventDefault();
+                return false;
+            }
+            
+            console.log('All validations passed, submitting form...');
+            
+            // If not creating a customer, remove customer field names so they're not submitted
+            const userType = document.getElementById('user_type').value;
+            if (userType !== 'customer') {
+                const customerInputs = ['customer_name', 'customer_phone', 'customer_address', 'customer_city', 'customer_email', 'birth_date', 'gender'];
+                customerInputs.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.removeAttribute('name'); // Remove name attribute so field won't be submitted
+                        console.log('Removed name attribute from', fieldId);
+                    }
+                });
+                console.log('Removed name attributes from customer fields for non-customer user type');
+            }
+            
+            // Disable submit button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Creating User...';
+            
+            // Monitor form submission
+            console.log('Form is being submitted to:', form.action);
+            
+            // Show loading alert after delay
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    console.log('Form submission taking longer than expected - this might indicate an issue');
+                    alert('The form is being processed. Please wait...');
+                }
+            }, 3000);
+            
+            // Re-enable button after timeout (in case of error)
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    console.log('Re-enabling submit button after timeout');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Create User';
+                }
+            }, 10000);
+        });
+    } else {
+        console.error('Form with ID "userForm" not found!');
+        alert('Error: Form not found. Please refresh the page and try again.');
+    }
     
     // Password strength indicator
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('password_confirmation');
     
-    // Real-time password confirmation validation
-    confirmPasswordInput.addEventListener('input', function() {
-        if (passwordInput.value !== confirmPasswordInput.value) {
-            confirmPasswordInput.classList.add('is-invalid');
-            if (!confirmPasswordInput.nextElementSibling || !confirmPasswordInput.nextElementSibling.classList.contains('invalid-feedback')) {
-                const feedback = document.createElement('div');
-                feedback.className = 'invalid-feedback';
-                feedback.textContent = 'Passwords do not match';
-                confirmPasswordInput.parentNode.appendChild(feedback);
+    if (passwordInput && confirmPasswordInput) {
+        console.log('Password fields found, adding validation');
+        
+        // Real-time password confirmation validation
+        confirmPasswordInput.addEventListener('input', function() {
+            console.log('Password confirmation field changed');
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.classList.add('is-invalid');
+                if (!confirmPasswordInput.nextElementSibling || !confirmPasswordInput.nextElementSibling.classList.contains('invalid-feedback')) {
+                    const feedback = document.createElement('div');
+                    feedback.className = 'invalid-feedback';
+                    feedback.textContent = 'Passwords do not match';
+                    confirmPasswordInput.parentNode.appendChild(feedback);
+                }
+                console.log('Password mismatch detected');
+            } else {
+                confirmPasswordInput.classList.remove('is-invalid');
+                const feedback = confirmPasswordInput.nextElementSibling;
+                if (feedback && feedback.classList.contains('invalid-feedback')) {
+                    feedback.remove();
+                }
+                console.log('Passwords match');
             }
-        } else {
-            confirmPasswordInput.classList.remove('is-invalid');
-            const feedback = confirmPasswordInput.nextElementSibling;
-            if (feedback && feedback.classList.contains('invalid-feedback')) {
-                feedback.remove();
+        });
+    } else {
+        console.error('Password fields not found!');
+    }
+    
+    // Debug user type selector
+    const userTypeSelect = document.getElementById('user_type');
+    if (userTypeSelect) {
+        userTypeSelect.addEventListener('change', function() {
+            console.log('User type selector changed to:', this.value);
+        });
+    }
+    
+    console.log('Form setup completed');
+});
+
+// Global error handler
+window.addEventListener('error', function(e) {
+    console.error('JavaScript error occurred:', e.error);
+    console.error('Error message:', e.message);
+    console.error('File:', e.filename);
+    console.error('Line:', e.lineno);
+});
+
+// Handle beforeunload to warn about unsaved changes
+window.addEventListener('beforeunload', function(e) {
+    const form = document.getElementById('userForm');
+    if (form) {
+        const formData = new FormData(form);
+        let hasData = false;
+        
+        for (let [key, value] of formData.entries()) {
+            if (value.trim() && key !== '_token') {
+                hasData = true;
+                break;
             }
         }
-    });
+        
+        if (hasData) {
+            console.log('User trying to leave page with unsaved form data');
+        }
+    }
 });
 </script>
 @endpush

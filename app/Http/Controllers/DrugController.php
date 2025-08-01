@@ -66,12 +66,21 @@ class DrugController extends Controller
     public function store(StoreDrugRequest $request)
     {
         try {
-            // Generate drug code
-            $lastDrug = Drug::orderBy('kd_obat', 'desc')->first();
+            // Generate drug code - only look at DR prefixed drugs
+            $lastDrug = Drug::where('kd_obat', 'like', 'DR%')
+                           ->orderBy('kd_obat', 'desc')
+                           ->first();
+            
             $nextNumber = $lastDrug 
                 ? (int)substr($lastDrug->kd_obat, 2) + 1 
                 : 1;
             $drugCode = 'DR' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            
+            // Double-check that this code doesn't exist (safety measure)
+            while (Drug::where('kd_obat', $drugCode)->exists()) {
+                $nextNumber++;
+                $drugCode = 'DR' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            }
 
             $drug = Drug::create([
                 'kd_obat' => $drugCode,

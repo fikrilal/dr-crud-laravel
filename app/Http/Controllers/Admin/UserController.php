@@ -73,22 +73,40 @@ class UserController extends Controller
     
     public function store(Request $request)
     {
-        $request->validate([
+        // Debug: Log incoming request
+        \Log::info('User creation request received', [
+            'request_data' => $request->all(),
+            'user_type' => $request->user_type,
+            'method' => $request->method(),
+            'url' => $request->url()
+        ]);
+
+        // Prepare validation rules based on user type
+        $validationRules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'user_type' => ['required', 'in:admin,pharmacist,customer'],
             'is_active' => ['boolean'],
-            // Customer specific fields
-            'customer_name' => ['required_if:user_type,customer', 'string', 'max:255'],
-            'customer_phone' => ['required_if:user_type,customer', 'string', 'max:20'],
-            'customer_address' => ['required_if:user_type,customer', 'string', 'max:500'],
-            'customer_city' => ['required_if:user_type,customer', 'string', 'max:100'],
-            'customer_email' => ['nullable', 'email', 'max:255'],
-            'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'in:L,P'],
-        ]);
+        ];
+
+        // Only add customer validation rules if user_type is customer
+        if ($request->user_type === 'customer') {
+            $validationRules = array_merge($validationRules, [
+                'customer_name' => ['required', 'string', 'max:255'],
+                'customer_phone' => ['required', 'string', 'max:20'],
+                'customer_address' => ['required', 'string', 'max:500'],
+                'customer_city' => ['required', 'string', 'max:100'],
+                'customer_email' => ['nullable', 'email', 'max:255'],
+                'birth_date' => ['nullable', 'date'],
+                'gender' => ['nullable', 'in:L,P'],
+            ]);
+        }
+
+        $request->validate($validationRules);
         
+        \Log::info('Validation passed for user creation');
+
         try {
             DB::beginTransaction();
             
@@ -100,6 +118,8 @@ class UserController extends Controller
                 'is_active' => $request->boolean('is_active', true),
             ];
             
+            \Log::info('User data prepared', ['user_data' => array_merge($userData, ['password' => '[HIDDEN]'])]);
+            
             // If creating a customer, generate customer code and set it
             if ($request->user_type === 'customer') {
                 $lastCustomer = Customer::orderBy('kd_pelanggan', 'desc')->first();
@@ -109,6 +129,8 @@ class UserController extends Controller
                 $customerCode = 'CS' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
                 
                 $userData['kd_pelanggan'] = $customerCode;
+                
+                \Log::info('Creating customer record', ['customer_code' => $customerCode]);
                 
                 // Create the customer record
                 $customer = Customer::create([
@@ -121,9 +143,12 @@ class UserController extends Controller
                     'tanggal_lahir' => $request->birth_date,
                     'jenis_kelamin' => $request->gender,
                 ]);
+                
+                \Log::info('Customer record created', ['customer_id' => $customer->id]);
             }
             
             $user = User::create($userData);
+            \Log::info('User created successfully', ['user_id' => $user->id, 'user_type' => $user->user_type]);
             
             DB::commit();
             
@@ -134,10 +159,16 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             
+            \Log::error('User creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+            
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to create user. Please try again.');
+                ->with('error', 'Failed to create user: ' . $e->getMessage());
         }
     }
     
