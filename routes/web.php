@@ -57,7 +57,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 // Drug Management Routes (Admin & Pharmacist)
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'pharmacist'])->group(function () {
     Route::resource('drugs', DrugController::class);
     Route::get('/api/drugs/search', [DrugController::class, 'search'])->name('drugs.search');
     Route::patch('/drugs/{drug}/stock', [DrugController::class, 'updateStock'])->name('drugs.updateStock');

@@ -49,6 +49,43 @@
     color: #94a3b8 !important;
 }
 
+.modern-form-control option {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+    border: none !important;
+}
+
+.form-select.modern-form-control {
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #e2e8f0 !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 12px !important;
+    padding-right: 2.25rem !important;
+    border-radius: 8px;
+}
+
+.form-select.modern-form-control:focus {
+    background: #334155 !important;
+    border-color: #3b82f6 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+.form-select.modern-form-control option {
+    background: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+.modern-form-label {
+    color: #f8fafc;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
 /* Fix select dropdown styling */
 .modern-form-control option {
     background: #334155 !important;
@@ -124,6 +161,31 @@
     color: #f8fafc;
     font-weight: 500;
     margin-bottom: 0.5rem;
+}
+
+.input-group-text {
+    background: #475569 !important;
+    border: 1px solid #475569 !important;
+    color: #94a3b8 !important;
+    border-radius: 0 8px 8px 0 !important;
+}
+
+.input-group .modern-form-control {
+    border-radius: 8px 0 0 8px !important;
+}
+
+.form-check-input {
+    background-color: #334155 !important;
+    border: 1px solid #475569 !important;
+}
+
+.form-check-input:checked {
+    background-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+.form-check-label {
+    color: #e2e8f0 !important;
 }
 
 .modern-btn-primary {
@@ -317,43 +379,73 @@
     margin-top: 0.5rem;
 }
 
+.modern-btn-outline-secondary {
+    background: transparent;
+    border: 1px solid #64748b;
+    color: #64748b;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.modern-btn-outline-secondary:hover {
+    background: #64748b;
+    color: white;
+    text-decoration: none;
+}
+
 .modern-dropdown-menu {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
     border-radius: 8px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    padding: 0.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 .modern-dropdown-item {
-    color: #e2e8f0;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
+    color: #e2e8f0 !important;
     transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .modern-dropdown-item:hover {
-    background: #334155;
-    color: #f8fafc;
+    background: #334155 !important;
+    color: #f8fafc !important;
+}
+
+.modern-dropdown-divider {
+    border-color: #334155 !important;
 }
 
 .modern-modal .modal-content {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
     border-radius: 16px;
     color: #e2e8f0;
 }
 
 .modern-modal .modal-header {
-    border-bottom: 1px solid #334155;
     background: #0f172a;
+    border-bottom: 1px solid #334155 !important;
+    color: #f8fafc;
+    border-radius: 16px 16px 0 0;
+}
+
+.modern-modal .modal-body {
+    background: #1e293b;
+    color: #e2e8f0;
 }
 
 .modern-modal .modal-footer {
-    border-top: 1px solid #334155;
+    background: #1e293b;
+    border-top: 1px solid #334155 !important;
+    border-radius: 0 0 16px 16px;
+}
+
+.btn-close {
+    filter: invert(1);
 }
 
 /* Modern Pagination Styles - Force Override Bootstrap */
@@ -661,23 +753,37 @@
                                     </td>
                                     <td>
                                         <div class="dropdown">
-                                            <button class="modern-btn-outline btn-sm" type="button" data-bs-toggle="dropdown">
+                                            <button type="button" class="modern-btn-outline-secondary dropdown-toggle" 
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
                                             <ul class="dropdown-menu modern-dropdown-menu">
-                                                <li><a class="modern-dropdown-item" href="{{ route('drugs.show', $drug) }}">
-                                                    <i class="bi bi-eye"></i>View Details
-                                                </a></li>
-                                                <li><a class="modern-dropdown-item" href="{{ route('drugs.edit', $drug) }}">
-                                                    <i class="bi bi-pencil"></i>Edit Drug
-                                                </a></li>
-                                                <li><button class="modern-dropdown-item" onclick="showStockModal({{ $drug->id }}, '{{ $drug->nama_obat }}', {{ $drug->stok }})">
-                                                    <i class="bi bi-box"></i>Update Stock
-                                                </button></li>
-                                                <li><hr class="dropdown-divider" style="border-color: #334155;"></li>
-                                                <li><button class="modern-dropdown-item" style="color: #f87171;" onclick="confirmDelete({{ $drug->id }}, '{{ $drug->nama_obat }}')">
-                                                    <i class="bi bi-trash"></i>Delete Drug
-                                                </button></li>
+                                                <li>
+                                                    <a class="dropdown-item modern-dropdown-item" href="{{ route('drugs.show', $drug) }}">
+                                                        <i class="bi bi-eye me-2"></i>View Details
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item modern-dropdown-item" href="{{ route('drugs.edit', $drug) }}">
+                                                        <i class="bi bi-pencil me-2"></i>Edit Drug
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item modern-dropdown-item stock-update-btn" 
+                                                            data-drug-id="{{ $drug->kd_obat }}" 
+                                                            data-drug-name="{{ $drug->nama_obat }}" 
+                                                            data-current-stock="{{ $drug->stok }}">
+                                                        <i class="bi bi-box me-2"></i>Update Stock
+                                                    </button>
+                                                </li>
+                                                <li><hr class="dropdown-divider modern-dropdown-divider"></li>
+                                                <li>
+                                                    <button type="button" class="dropdown-item modern-dropdown-item delete-drug-btn" style="color: #ef4444 !important;" 
+                                                            data-drug-id="{{ $drug->kd_obat }}" 
+                                                            data-drug-name="{{ $drug->nama_obat }}">
+                                                        <i class="bi bi-trash me-2"></i>Delete Drug
+                                                    </button>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
@@ -720,75 +826,129 @@
     </div>
 </div>
 
-<!-- Stock Update Modal -->
+<!-- Enhanced Stock Update Modal -->
 <div class="modal fade modern-modal" id="stockModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Update Stock</h5>
+        <div class="modal-content" style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0;">
+            <div class="modal-header" style="border-bottom: 1px solid #334155;">
+                <h5 class="modal-title text-primary">
+                    <i class="bi bi-box me-2"></i>Update Stock Inventory
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" id="stockForm">
                 @csrf
                 @method('PATCH')
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="modern-form-label">Drug Name</label>
-                        <input type="text" class="modern-form-control" id="drugName" readonly>
+                    <div class="alert alert-info" style="background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; color: #60a5fa;">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> Changes will be logged for inventory tracking.
                     </div>
-                    <div class="mb-3">
-                        <label class="modern-form-label">Current Stock</label>
-                        <input type="number" class="modern-form-control" id="currentStock" readonly>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="modern-form-label">Drug Name</label>
+                            <input type="text" class="modern-form-control" id="drugName" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="modern-form-label">Current Stock</label>
+                            <div class="input-group">
+                                <input type="number" class="modern-form-control" id="currentStock" readonly>
+                                <span class="input-group-text" style="background: #475569; border: 1px solid #475569; color: #94a3b8;">units</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="stockChange" class="modern-form-label">Stock Change</label>
-                        <input type="number" class="modern-form-control" id="stockChange" name="stock_change" required min="1">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="type" class="modern-form-label">Operation Type</label>
+                            <select class="form-select modern-form-control" id="type" name="type" required>
+                                <option value="">Select operation...</option>
+                                <option value="add">➕ Add Stock</option>
+                                <option value="subtract">➖ Subtract Stock</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="stockChange" class="modern-form-label">Quantity</label>
+                            <div class="input-group">
+                                <input type="number" class="modern-form-control" id="stockChange" name="stock_change" 
+                                       required min="1" placeholder="Enter quantity">
+                                <span class="input-group-text" style="background: #475569; border: 1px solid #475569; color: #94a3b8;">units</span>
+                            </div>
+                        </div>
                     </div>
+                    
                     <div class="mb-3">
-                        <label for="type" class="modern-form-label">Type</label>
-                        <select class="modern-form-control" id="type" name="type" required>
-                            <option value="add">Add Stock</option>
-                            <option value="subtract">Subtract Stock</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="reason" class="modern-form-label">Reason</label>
+                        <label for="reason" class="modern-form-label">Reason for Change</label>
                         <input type="text" class="modern-form-control" id="reason" name="reason" required 
-                               placeholder="e.g., New delivery, Damaged goods, etc.">
+                               placeholder="e.g., New delivery, Damaged goods, Sold items, etc.">
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="modern-btn-outline" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="modern-btn-primary">Update Stock</button>
+                <div class="modal-footer" style="border-top: 1px solid #334155;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-2"></i>Update Stock
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- Enhanced Delete Confirmation Modal -->
 <div class="modal fade modern-modal" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" style="color: #f87171;">Delete Drug</h5>
+        <div class="modal-content" style="background: #1e293b; border: 1px solid #334155; color: #e2e8f0;">
+            <div class="modal-header" style="border-bottom: 1px solid #334155;">
+                <h5 class="modal-title text-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Drug Deletion
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="text-center">
-                    <div class="empty-state-icon mx-auto mb-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #ef4444, #dc2626);">
-                        <i class="bi bi-exclamation-triangle" style="font-size: 1.5rem;"></i>
+                <div class="alert alert-warning" style="background: rgba(251, 191, 36, 0.1); border: 1px solid #f59e0b; color: #fbbf24;">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                
+                <div class="text-center mb-4">
+                    <div class="empty-state-icon mx-auto mb-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-capsule" style="font-size: 1.5rem; color: white;"></i>
                     </div>
-                    <h5 style="color: #f8fafc;">Are you sure?</h5>
-                    <p style="color: #94a3b8;">This action will permanently delete <strong style="color: #f8fafc;" id="deleteDrugName"></strong> from your inventory.</p>
+                    <h5 style="color: #f8fafc;">Delete Drug from Inventory</h5>
+                </div>
+                
+                <p>Are you sure you want to permanently delete the drug:</p>
+                <div class="text-center p-3" style="background: #334155; border-radius: 8px; margin: 1rem 0;">
+                    <strong id="deleteDrugName" style="color: #f8fafc; font-size: 1.1rem;"></strong>
+                </div>
+                
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        This will remove the drug from your inventory. Any associated transaction history will be preserved.
+                    </small>
+                </div>
+                
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="confirmDeletion" required>
+                    <label class="form-check-label" for="confirmDeletion">
+                        I understand that this action will permanently delete the drug from inventory.
+                    </label>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="modern-btn-outline" data-bs-dismiss="modal">Cancel</button>
+            <div class="modal-footer" style="border-top: 1px solid #334155;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
                 <form method="POST" id="deleteForm" class="d-inline">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="modern-btn-primary" style="background: linear-gradient(135deg, #ef4444, #dc2626);">Yes, Delete</button>
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
+                        <i class="bi bi-trash me-2"></i>Delete Drug
+                    </button>
                 </form>
             </div>
         </div>
@@ -799,19 +959,63 @@
 
 @push('scripts')
 <script>
+console.log('Drug management JavaScript loaded');
+console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+
 function showStockModal(drugId, drugName, currentStock) {
-    document.getElementById('stockForm').action = `/drugs/${drugId}/stock`;
+    console.log('Showing stock modal for:', { drugId, drugName, currentStock });
+    
+    document.getElementById('stockForm').action = `drugs/${drugId}/stock`;
     document.getElementById('drugName').value = drugName;
     document.getElementById('currentStock').value = currentStock;
     document.getElementById('stockChange').value = '';
+    document.getElementById('type').value = '';
     document.getElementById('reason').value = '';
-    new bootstrap.Modal(document.getElementById('stockModal')).show();
+    
+    const bsModal = new bootstrap.Modal(document.getElementById('stockModal'));
+    bsModal.show();
 }
 
 function confirmDelete(drugId, drugName) {
-    document.getElementById('deleteDrugName').textContent = drugName;
-    document.getElementById('deleteForm').action = `/drugs/${drugId}`;
-    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    console.log('Confirm delete for:', { drugId, drugName });
+    console.log('Drug ID type:', typeof drugId, 'Drug ID value:', drugId);
+    
+    // Validate drugId
+    if (!drugId || drugId === 'undefined' || drugId === '') {
+        console.error('Invalid drug ID:', drugId);
+        alert('Error: Invalid drug ID. Please refresh the page and try again.');
+        return;
+    }
+    
+    const modal = document.getElementById('deleteModal');
+    const deleteForm = document.getElementById('deleteForm');
+    const deleteDrugNameElement = document.getElementById('deleteDrugName');
+    const confirmCheckbox = document.getElementById('confirmDeletion');
+    const confirmButton = document.getElementById('confirmDeleteBtn');
+    
+    if (!modal || !deleteForm || !deleteDrugNameElement) {
+        console.error('Required modal elements not found');
+        alert('Error: Modal elements not found. Please refresh the page.');
+        return;
+    }
+    
+    // Set the form action and drug name
+    const actionUrl = `drugs/${drugId}`;
+    console.log('Setting form action to:', actionUrl);
+    deleteForm.action = actionUrl;
+    deleteDrugNameElement.textContent = drugName;
+    
+    // Reset checkbox and button state
+    if (confirmCheckbox) {
+        confirmCheckbox.checked = false;
+    }
+    if (confirmButton) {
+        confirmButton.disabled = true;
+    }
+    
+    // Show the modal
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
 }
 
 function exportToExcel() {
@@ -824,13 +1028,108 @@ document.addEventListener('DOMContentLoaded', function() {
     const categorySelect = document.getElementById('category');
     const stockStatusSelect = document.getElementById('stock_status');
     
-    categorySelect.addEventListener('change', function() {
-        this.form.submit();
+    if (categorySelect) {
+        categorySelect.addEventListener('change', function() {
+            this.form.submit();
+        });
+    }
+    
+    if (stockStatusSelect) {
+        stockStatusSelect.addEventListener('change', function() {
+            this.form.submit();
+        });
+    }
+    
+    // Stock update button event listeners
+    document.querySelectorAll('.stock-update-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const drugId = this.getAttribute('data-drug-id');
+            const drugName = this.getAttribute('data-drug-name');
+            const currentStock = this.getAttribute('data-current-stock');
+            showStockModal(drugId, drugName, currentStock);
+        });
     });
     
-    stockStatusSelect.addEventListener('change', function() {
-        this.form.submit();
+    // Delete drug button event listeners
+    document.querySelectorAll('.delete-drug-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            console.log('Button HTML:', this.outerHTML);
+            
+            const drugId = this.getAttribute('data-drug-id');
+            const drugName = this.getAttribute('data-drug-name');
+            
+            // Try alternative ways to get the drug ID
+            const drugIdFromDataset = this.dataset.drugId;
+            const drugIdDirectAttribute = this.getAttribute('data-drug-id');
+            
+            console.log('Delete button clicked - Drug ID:', drugId, 'Drug Name:', drugName);
+            console.log('Drug ID from dataset:', drugIdFromDataset);
+            console.log('Drug ID direct attribute:', drugIdDirectAttribute);
+            console.log('Button element:', this);
+            console.log('All data attributes:', this.dataset);
+            console.log('All attributes:');
+            for (let attr of this.attributes) {
+                console.log(`  ${attr.name}: ${attr.value}`);
+            }
+            
+            // Use the first non-empty value we can find
+            const finalDrugId = drugId || drugIdFromDataset || drugIdDirectAttribute;
+            console.log('Final drug ID to use:', finalDrugId);
+            
+            confirmDelete(finalDrugId, drugName);
+        });
     });
+    
+    // Enable/disable delete button based on checkbox
+    const confirmCheckbox = document.getElementById('confirmDeletion');
+    const confirmButton = document.getElementById('confirmDeleteBtn');
+    
+    if (confirmCheckbox && confirmButton) {
+        confirmCheckbox.addEventListener('change', function() {
+            confirmButton.disabled = !this.checked;
+            console.log('Delete checkbox changed:', this.checked);
+        });
+        
+        // Form submission with loading state
+        const deleteForm = document.getElementById('deleteForm');
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function(e) {
+                console.log('Delete form submitted');
+                console.log('Form action:', deleteForm.action);
+                console.log('Form method:', deleteForm.method);
+                
+                // Additional debugging
+                const methodInput = deleteForm.querySelector('input[name="_method"]');
+                if (methodInput) {
+                    console.log('Method input value:', methodInput.value);
+                } else {
+                    console.log('No method input found');
+                }
+                
+                const csrfInput = deleteForm.querySelector('input[name="_token"]');
+                if (csrfInput) {
+                    console.log('CSRF token found:', csrfInput.value.substring(0, 10) + '...');
+                } else {
+                    console.log('No CSRF token found');
+                }
+                
+                confirmButton.disabled = true;
+                confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+            });
+        }
+    }
+    
+    // Stock form submission with loading state
+    const stockForm = document.getElementById('stockForm');
+    if (stockForm) {
+        stockForm.addEventListener('submit', function(e) {
+            const submitBtn = stockForm.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+            }
+        });
+    }
 });
 </script>
 @endpush 
