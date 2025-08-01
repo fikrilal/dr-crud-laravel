@@ -904,7 +904,6 @@ function initializeFormSubmission() {
     
     console.log('=== SALE PROCESSING STARTED ===');
     console.log('Cart contents:', cart);
-    alert('DEBUG: Form submitted. Cart items: ' + cart.length + ', Check console with "Preserve log" enabled');
     
     if (cart.length === 0) {
         alert('Please add items to cart before processing sale.');
@@ -914,7 +913,6 @@ function initializeFormSubmission() {
     
     const paymentMethod = document.getElementById('metode_pembayaran').value;
     console.log('Payment method:', paymentMethod);
-    alert('DEBUG: Payment method: ' + paymentMethod);
     
     if (!paymentMethod) {
         alert('Please select a payment method.');
@@ -923,7 +921,6 @@ function initializeFormSubmission() {
     }
     
     console.log('✅ Validation passed. Preparing form data...');
-    alert('DEBUG: About to submit form with ' + cart.length + ' items');
     
     const form = this;
     
