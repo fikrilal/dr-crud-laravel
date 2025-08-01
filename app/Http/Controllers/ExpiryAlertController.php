@@ -26,26 +26,33 @@ class ExpiryAlertController extends Controller
     
     private function getExpiryData($filterDays, $alertType)
     {
-        // Simulate expiry dates based on drug types and creation dates
+        // Use actual expiry dates from tanggal_kadaluarsa field
         $drugs = Drug::where('status', 'active')
             ->with('supplier')
             ->get()
             ->map(function ($drug) {
-                // Simulate different shelf lives based on drug type
-                $shelfLifeMonths = $this->getShelfLifeByType($drug->jenis);
-                $estimatedExpiryDate = Carbon::parse($drug->created_at)->addMonths($shelfLifeMonths);
-                $daysUntilExpiry = Carbon::now()->diffInDays($estimatedExpiryDate, false);
+                // Use actual expiry date if available, otherwise estimate
+                if ($drug->tanggal_kadaluarsa) {
+                    $expiryDate = Carbon::parse($drug->tanggal_kadaluarsa);
+                    $daysUntilExpiry = Carbon::now()->diffInDays($expiryDate, false);
+                } else {
+                    // Fallback to simulation for drugs without expiry dates
+                    $shelfLifeMonths = $this->getShelfLifeByType($drug->jenis);
+                    $expiryDate = Carbon::parse($drug->created_at)->addMonths($shelfLifeMonths);
+                    $daysUntilExpiry = Carbon::now()->diffInDays($expiryDate, false);
+                }
                 
                 // Determine alert level
                 $alertLevel = $this->getAlertLevel($daysUntilExpiry);
                 
                 return [
                     'drug' => $drug,
-                    'estimated_expiry' => $estimatedExpiryDate,
+                    'estimated_expiry' => $expiryDate,
                     'days_until_expiry' => $daysUntilExpiry,
                     'alert_level' => $alertLevel,
                     'is_expired' => $daysUntilExpiry < 0,
                     'stock_value' => $drug->stok * $drug->harga_jual,
+                    'has_actual_expiry' => !is_null($drug->tanggal_kadaluarsa),
                 ];
             })
             ->filter(function ($item) use ($filterDays, $alertType) {

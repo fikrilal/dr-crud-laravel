@@ -331,7 +331,7 @@
                                     <span class="input-group-text">Rp</span>
                                     <input type="number" class="form-control @error('harga_beli') is-invalid @enderror" 
                                            id="harga_beli" name="harga_beli" value="{{ old('harga_beli') }}" 
-                                           step="100" min="0" required placeholder="0">
+                                           min="1" required placeholder="0">
                                     @error('harga_beli')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -344,7 +344,7 @@
                                     <span class="input-group-text">Rp</span>
                                     <input type="number" class="form-control @error('harga_jual') is-invalid @enderror" 
                                            id="harga_jual" name="harga_jual" value="{{ old('harga_jual') }}" 
-                                           step="100" min="0" required placeholder="0">
+                                           min="1" required placeholder="0">
                                     @error('harga_jual')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -363,7 +363,7 @@
                             <div class="col-md-6">
                                 <label for="stok" class="modern-form-label">Initial Stock<span class="required-asterisk">*</span></label>
                                 <input type="number" class="form-control modern-form-control @error('stok') is-invalid @enderror" 
-                                       id="stok" name="stok" value="{{ old('stok') }}" min="0" required placeholder="0">
+                                       id="stok" name="stok" value="{{ old('stok') }}" min="1" required placeholder="1">
                                 @error('stok')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -372,7 +372,7 @@
                             <div class="col-md-6">
                                 <label for="stok_minimum" class="modern-form-label">Minimum Stock Alert<span class="required-asterisk">*</span></label>
                                 <input type="number" class="form-control modern-form-control @error('stok_minimum') is-invalid @enderror" 
-                                       id="stok_minimum" name="stok_minimum" value="{{ old('stok_minimum') }}" min="0" required placeholder="0">
+                                       id="stok_minimum" name="stok_minimum" value="{{ old('stok_minimum') }}" min="1" required placeholder="1">
                                 @error('stok_minimum')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -390,9 +390,9 @@
 
                         <div class="row g-4">
                             <div class="col-md-6">
-                                <label for="tanggal_kadaluarsa" class="modern-form-label">Expiry Date<span class="required-asterisk">*</span></label>
+                                <label for="tanggal_kadaluarsa" class="modern-form-label">Expiry Date</label>
                                 <input type="date" class="form-control modern-form-control @error('tanggal_kadaluarsa') is-invalid @enderror" 
-                                       id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa') }}" required>
+                                       id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa') }}">
                                 @error('tanggal_kadaluarsa')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -548,25 +548,83 @@ document.addEventListener('DOMContentLoaded', function() {
     stockInput.addEventListener('input', validateStock);
     minStockInput.addEventListener('input', validateStock);
 
-    // Form validation before submit
-    document.querySelector('form').addEventListener('submit', function(e) {
-        if (!validatePrices() || !validateStock()) {
-            e.preventDefault();
-            alert('Please fix the validation errors before submitting.');
-        }
-    });
+    // Test submit button click - be more specific
+    const submitButton = document.querySelector('.modern-form-footer button[type="submit"]');
+    console.log('Drug form submit button found:', submitButton);
+    console.log('Submit button disabled:', submitButton ? submitButton.disabled : 'button not found');
+    console.log('Submit button style display:', submitButton ? getComputedStyle(submitButton).display : 'button not found');
+    console.log('Submit button pointer events:', submitButton ? getComputedStyle(submitButton).pointerEvents : 'button not found');
+    
+    if (submitButton) {
+        submitButton.addEventListener('click', function(e) {
+            console.log('Submit button clicked');
+            console.log('Event default prevented?', e.defaultPrevented);
+            console.log('Button disabled at click time:', this.disabled);
+        });
+        
+        // Test if button responds to hover
+        submitButton.addEventListener('mouseenter', function() {
+            console.log('Submit button hovered');
+        });
+        
+        // Test if button responds to mouse down
+        submitButton.addEventListener('mousedown', function() {
+            console.log('Submit button mouse down');
+        });
+    } else {
+        console.error('Submit button not found!');
+    }
 
-    // Bootstrap form validation
-    const forms = document.querySelectorAll('.needs-validation');
-    Array.prototype.slice.call(forms).forEach(function(form) {
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
+    // Form validation before submit - be more specific
+    const form = document.querySelector('form[action*="drugs.store"], form.needs-validation');
+    console.log('Drug creation form found:', form);
+    console.log('Form action:', form ? form.action : 'form not found');
+    console.log('Form novalidate attribute:', form ? form.noValidate : 'form not found');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('Form submission triggered');
+            let isValid = true;
+            
+            // Check custom validations
+            if (!validatePrices()) {
+                console.log('Price validation failed');
+                isValid = false;
             }
-            form.classList.add('was-validated');
-        }, false);
-    });
+            if (!validateStock()) {
+                console.log('Stock validation failed');
+                isValid = false;
+            }
+            
+            // Check HTML5 form validation
+            if (!this.checkValidity()) {
+                console.log('HTML5 validation failed');
+                
+                // Show which fields are invalid
+                const invalidFields = this.querySelectorAll(':invalid');
+                console.log('Invalid fields:', invalidFields);
+                invalidFields.forEach(field => {
+                    console.log('Invalid field:', field.name || field.id, 'Value:', field.value, 'Required:', field.required);
+                    console.log('  - Valid state:', field.validity);
+                    console.log('  - Validation message:', field.validationMessage);
+                });
+                
+                isValid = false;
+                this.classList.add('was-validated');
+            }
+            
+            if (!isValid) {
+                console.log('Form validation failed, preventing submission');
+                e.preventDefault();
+                e.stopPropagation();
+                alert('Please fix the validation errors before submitting.');
+            } else {
+                console.log('Form validation passed, submitting...');
+            }
+        });
+    } else {
+        console.error('Form not found!');
+    }
 });
 </script>
 @endpush 

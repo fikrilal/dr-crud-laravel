@@ -25,6 +25,11 @@ class Drug extends Model
         'status',
         'min_stock_level',
         'description',
+        'tanggal_kadaluarsa',
+        'efek_samping',
+        'kontraindikasi',
+        'dosis_dewasa',
+        'dosis_anak',
     ];
 
     protected $casts = [
@@ -33,6 +38,7 @@ class Drug extends Model
         'stok' => 'integer',
         'min_stock_level' => 'integer',
         'status' => 'string',
+        'tanggal_kadaluarsa' => 'date',
     ];
 
     // Attribute Accessors for Laravel-style property names
@@ -94,59 +100,6 @@ class Drug extends Model
     public function setDeskripsiAttribute($value)
     {
         $this->attributes['description'] = $value;
-    }
-
-    // Add a default expiry date accessor (since it doesn't exist in DB)
-    public function getTanggalKadaluarsaAttribute()
-    {
-        return now()->addYear()->format('Y-m-d'); // Default to 1 year from now
-    }
-
-    public function setTanggalKadaluarsaAttribute($value)
-    {
-        // For now, we'll ignore this since the column doesn't exist
-        // In a future migration, we could add this column
-    }
-
-    // Add default medical info attributes
-    public function getEfekSampingAttribute()
-    {
-        return null; // Not in current DB schema
-    }
-
-    public function setEfekSampingAttribute($value)
-    {
-        // Ignore for now
-    }
-
-    public function getKontraindikasiAttribute()
-    {
-        return null; // Not in current DB schema
-    }
-
-    public function setKontraindikasiAttribute($value)
-    {
-        // Ignore for now
-    }
-
-    public function getDosisAnakAttribute()
-    {
-        return null; // Not in current DB schema
-    }
-
-    public function setDosisAnakAttribute($value)
-    {
-        // Ignore for now
-    }
-
-    public function getDosisDewasaAttribute()
-    {
-        return null; // Not in current DB schema
-    }
-
-    public function setDosisDewasaAttribute($value)
-    {
-        // Ignore for now
     }
 
     public function supplier()

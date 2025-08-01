@@ -22,14 +22,14 @@ class UpdateDrugRequest extends FormRequest
      */
     public function rules(): array
     {
-        $drugId = $this->route('drug')->id;
+        $drugId = $this->route('drug')->kd_obat;
 
         return [
             'nama_obat' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('drugs', 'nm_obat')->ignore($drugId)
+                Rule::unique('drugs', 'nm_obat')->ignore($drugId, 'kd_obat')
             ],
             'kategori' => 'required|string|max:100',
             'bentuk_obat' => 'required|string|max:50',
@@ -37,7 +37,7 @@ class UpdateDrugRequest extends FormRequest
             'harga_jual' => 'required|numeric|min:0|max:999999999.99|gt:harga_beli',
             'stok' => 'required|integer|min:0',
             'stok_minimum' => 'required|integer|min:0|lte:stok',
-            'tanggal_kadaluarsa' => 'required|date|after:today',
+            'tanggal_kadaluarsa' => 'nullable|date|after_or_equal:today',
             'deskripsi' => 'nullable|string|max:1000',
             'efek_samping' => 'nullable|string|max:1000',
             'kontraindikasi' => 'nullable|string|max:1000',

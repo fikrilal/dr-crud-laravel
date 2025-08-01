@@ -94,6 +94,11 @@ class DrugController extends Controller
                 'kd_supplier' => $request->supplier_id,
                 'status' => $request->status,
                 'description' => $request->deskripsi,
+                'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+                'efek_samping' => $request->efek_samping,
+                'kontraindikasi' => $request->kontraindikasi,
+                'dosis_dewasa' => $request->dosis_dewasa,
+                'dosis_anak' => $request->dosis_anak,
             ]);
 
             return redirect()->route('drugs.index')
@@ -139,6 +144,11 @@ class DrugController extends Controller
                 'kd_supplier' => $request->supplier_id,
                 'status' => $request->status,
                 'description' => $request->deskripsi,
+                'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+                'efek_samping' => $request->efek_samping,
+                'kontraindikasi' => $request->kontraindikasi,
+                'dosis_dewasa' => $request->dosis_dewasa,
+                'dosis_anak' => $request->dosis_anak,
             ]);
 
             return redirect()->route('drugs.index')
